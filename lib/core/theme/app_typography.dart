@@ -17,7 +17,7 @@ class Typograph {
 }
 
 class AppTypograph {
-  static const String _fontName = 'helvetica';
+  static const String _fontName = 'urbanist';
 
   //* Heading 1
   static Typograph heading1 = Typograph(

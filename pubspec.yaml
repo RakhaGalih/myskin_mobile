@@ -23,4 +23,15 @@ flutter:
   uses-material-design: 
   assets:
     - assets/images/
+  fonts:
+    - family: Urbanist
+      fonts:
+        - asset: assets/fonts/Urbanist/Urbanist-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Urbanist/Urbanist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Urbanist/Urbanist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Urbanist/Urbanist-Bold.ttf
+          weight: 700
   
