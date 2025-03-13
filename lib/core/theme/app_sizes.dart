@@ -16,7 +16,7 @@ class AppSizes {
   double get size40 => MediaQuery.of(context).size.shortestSide * 0.4;
   double get size60 => MediaQuery.of(context).size.shortestSide * 0.6;
   double get size80 => MediaQuery.of(context).size.shortestSide * 0.8;
-  double get padding => 16;
+  double get padding => 30;
   double get innerPadding => 24;
   double get inputHeigth => 64;
 }
