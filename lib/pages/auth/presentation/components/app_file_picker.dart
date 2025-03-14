@@ -56,8 +56,7 @@ class _AppFilePickerState extends State<AppFilePicker> {
           onTap: () => _openFilePicker(),
           child: InputDecorator(
             decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              contentPadding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
               filled: true,
               fillColor: AppColor.whiteColor,
               alignLabelWithHint: true,
