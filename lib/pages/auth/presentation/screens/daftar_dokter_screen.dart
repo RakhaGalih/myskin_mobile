@@ -6,6 +6,7 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/auth/presentation/components/app_dropdown.dart';
 import 'package:myskin_mobile/pages/auth/presentation/components/app_file_picker.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/navbar_doctor_screen.dart';
 
 class DaftarDokterScreen extends StatefulWidget {
   static const route = '/daftardokter';
@@ -220,6 +221,9 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                         setState(() {
                           _selectedForm = 1;
                         });
+                      } else {
+                        Navigator.of(context)
+                            .pushReplacementNamed(NavbarDoctorScreen.route);
                       }
                     },
                     child: SizedBox(
