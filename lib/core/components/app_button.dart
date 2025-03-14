@@ -8,11 +8,13 @@ class AppButton extends StatelessWidget {
     required this.child,
     required this.onPressed,
     this.radius = 24,
+    this.isOutline = false,
     this.colorButton = AppColor.primaryColor,
     this.colorOverlay = AppColor.whiteColor,
   });
   final Widget child;
   final VoidCallback onPressed;
+  final bool isOutline;
   final double radius;
   final Color colorButton;
   final Color colorOverlay;
@@ -21,10 +23,10 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      
       style: ElevatedButton.styleFrom(
         overlayColor: colorOverlay,
-        backgroundColor: colorButton,
+        backgroundColor: (isOutline) ? AppColor.whiteColor : colorButton,
+        side: (isOutline) ? BorderSide(color: colorButton, width: 1) : null,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
         ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/theme/app_theme.dart';
+import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_dokter_screen.dart';
+import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/login_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/onboarding_screen.dart';
 
@@ -23,6 +25,8 @@ class MainApp extends StatelessWidget {
       routes: {
         OnboardingScreen.route: (context) => const OnboardingScreen(),
         LoginScreen.route: (context) => const LoginScreen(),
+        DaftarScreen.route: (context) => const DaftarScreen(),
+        DaftarDokterScreen.route: (context) => const DaftarDokterScreen(),
       },
     );
   }

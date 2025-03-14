@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 
@@ -9,6 +11,8 @@ class AppTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
   final bool isPassword;
+  final bool isNumber;
+  final String? hintext;
 
   const AppTextField({
     super.key,
@@ -18,6 +22,8 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.isPassword = false,
+    this.isNumber = false,
+    this.hintext,
   });
 
   @override
@@ -30,6 +36,7 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -38,6 +45,12 @@ class _AppTextFieldState extends State<AppTextField> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+            keyboardType: (widget.isNumber) ? TextInputType.number : null,
+            inputFormatters: (widget.isNumber)
+                ? <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                  ]
+                : null,
             textAlign: TextAlign.start,
             controller: widget.controller,
             obscureText: (widget.isPassword) ? _isObscured : false,
@@ -53,37 +66,17 @@ class _AppTextFieldState extends State<AppTextField> {
             onChanged: widget.onChanged,
             style: AppTypograph.body1.regular,
             decoration: InputDecoration(
-              hintText: 'Masukkan ${widget.title} kamu',
+              hintText: widget.hintext ?? 'Masukkan ${widget.title} kamu',
               filled: true,
               fillColor: AppColor.whiteColor,
               alignLabelWithHint: true,
               labelStyle: AppTypograph.body1.regular
                   .copyWith(color: AppColor.greyTextColor),
-              focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                borderSide:
-                    BorderSide(color: AppColor.primaryColor, width: 2),
-              ),
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                borderSide:
-                    BorderSide(color: AppColor.primaryColor, width: 2),
-              ),
-              errorBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                borderSide:
-                    BorderSide(color: AppColor.redTextColor, width: 2),
-              ),
-              focusedErrorBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                borderSide:
-                    BorderSide(color: AppColor.redTextColor, width: 2),
-              ),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                borderSide:
-                    BorderSide(color: AppColor.primaryColor, width: 2),
-              ),
+              focusedBorder: appOutlineInputBorder(AppColor.primaryColor),
+              enabledBorder: appOutlineInputBorder(AppColor.greyTextColor),
+              errorBorder: appOutlineInputBorder(AppColor.redTextColor),
+              focusedErrorBorder: appOutlineInputBorder(AppColor.redTextColor),
+              border: appOutlineInputBorder(AppColor.greyTextColor),
               suffixIcon: widget.isPassword
                   ? IconButton(
                       splashRadius: 30,
@@ -101,4 +94,11 @@ class _AppTextFieldState extends State<AppTextField> {
       ],
     );
   }
+}
+
+OutlineInputBorder appOutlineInputBorder(Color color) {
+  return OutlineInputBorder(
+    borderRadius: const BorderRadius.all(Radius.circular(16)),
+    borderSide: BorderSide(color: color, width: 1),
+  );
 }
