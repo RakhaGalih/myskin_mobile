@@ -32,13 +32,13 @@ class _DaftarScreenState extends State<DaftarScreen> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(context.as.padding),
+            padding: EdgeInsets.all(context.as.loginPadding),
             child: Column(
               children: [
                 ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.asset(
-                      'assets/images/dokter.jpeg',
+                      'assets/images/loginImage.jpeg',
                       height: context.as.appWidth - 60,
                       fit: BoxFit.cover,
                     )),

@@ -6,7 +6,7 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/auth/presentation/components/app_dropdown.dart';
 import 'package:myskin_mobile/pages/auth/presentation/components/app_file_picker.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/navbar_doctor_screen.dart';
+import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
 
 class DaftarDokterScreen extends StatefulWidget {
   static const route = '/daftardokter';
@@ -33,7 +33,7 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(context.as.padding),
+            padding: EdgeInsets.all(context.as.loginPadding),
             child: Column(
               children: [
                 ClipRRect(

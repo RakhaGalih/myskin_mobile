@@ -4,7 +4,7 @@ import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_dokter_scre
 import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/login_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/onboarding_screen.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/navbar_doctor_screen.dart';
+import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
 
 void main() {
   runApp(const MainApp());

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/home/models/provider_model.dart';
+import 'package:myskin_mobile/core/theme/app_colors.dart';
+import 'package:myskin_mobile/pages/dokter/pengajuan/models/provider_model.dart';
+import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/daftar_pengajuan_screen.dart';
+import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/screens/riwayat_verifikasi.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/home/presentation/screens/home_doctor_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +17,8 @@ class NavbarDoctorScreen extends StatelessWidget {
         child: Consumer<ProviderModel>(builder: (context, data, child) {
           List<Widget> widgetOptions = <Widget>[
             const HomeDoctorScreen(),
-            const HomeDoctorScreen(),
+            const DaftarPengajuanScreen(),
+            const RiwayatVerifikasiScreen()
           ];
           return Scaffold(
             body: widgetOptions[data.selectedNavBar],
@@ -25,12 +29,16 @@ class NavbarDoctorScreen extends StatelessWidget {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
+                  icon: Icon(Icons.assignment),
+                  label: 'Pengajuan',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.check_box),
+                  label: 'Verfikasi',
                 ),
               ],
               currentIndex: data.selectedNavBar,
-              selectedItemColor: Colors.amber[800],
+              selectedItemColor: AppColor.primaryColor,
               onTap: data.onNavBarTapped,
             ),
           );
