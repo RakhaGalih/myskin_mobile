@@ -5,6 +5,7 @@ import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_screen.dart
 import 'package:myskin_mobile/pages/auth/presentation/screens/login_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/onboarding_screen.dart';
 import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
+import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -29,6 +30,7 @@ class MainApp extends StatelessWidget {
         DaftarScreen.route: (context) => const DaftarScreen(),
         DaftarDokterScreen.route: (context) => const DaftarDokterScreen(),
         NavbarDoctorScreen.route: (context) => const NavbarDoctorScreen(),
+        DetailPengajuanScreen.route: (context) => const DetailPengajuanScreen(),
       },
     );
   }

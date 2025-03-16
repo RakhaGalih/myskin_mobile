@@ -121,6 +121,18 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Text('Profil Dokter Spesialis',
+                          style: AppTypograph.heading2.bold),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Text('Detail Profesional dan Dokumen Pendukung',
+                          style: AppTypograph.label2.regular.copyWith(
+                            color: AppColor.greyTextColor,
+                          )),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Row(
                         children: [
                           Expanded(

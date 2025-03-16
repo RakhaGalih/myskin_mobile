@@ -3,6 +3,8 @@ import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/card_container.dart';
+import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
 
 class RiwayatVerifikasiScreen extends StatelessWidget {
@@ -29,7 +31,7 @@ class RiwayatVerifikasiScreen extends StatelessWidget {
             child: SafeArea(
               child: Center(
                 child: Text(
-                  'Daftar Pengajuan Umum',
+                  'Riwayat Verifikasi',
                   style: AppTypograph.heading2.bold.copyWith(
                     color: AppColor.primaryColor,
                   ),
@@ -42,96 +44,80 @@ class RiwayatVerifikasiScreen extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 itemCount: 4,
                 itemBuilder: (context, index) {
-                  return Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: context.as.loginPadding,
-                        vertical: 8,
-                      ),
-                      padding: EdgeInsets.all(context.as.padding),
-                      decoration: BoxDecoration(
-                        color: AppColor.whiteColor,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColor.greyTextColor.withOpacity(0.1),
-                            blurRadius: 12.0,
-                          ),
-                        ],
-                      ),
+                  return CardContainer(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          VerifikasiItem(
-                            title: 'Tanggal Pengajuan',
-                            value: Text('22/06/2024',
-                                style: AppTypograph.label2.regular.copyWith(
-                                  color: AppColor.blackColor,
-                                )),
-                          ),
-                          const SizedBox(height: 12),
-                          VerifikasiItem(
-                            title: 'Pasien',
-                            value: Text('Muhammad Nur Shodiq',
-                                style: AppTypograph.label2.regular.copyWith(
-                                  color: AppColor.blackColor,
-                                )),
-                          ),
-                          const SizedBox(height: 12),
-                          VerifikasiItem(
-                            title: 'Diagnosis AI',
-                            value: Text('0.09% Melanoma',
-                                style: AppTypograph.label2.bold.copyWith(
-                                  color: AppColor.greenColor,
-                                )),
-                          ),
-                          const SizedBox(height: 12),
-                          VerifikasiItem(
-                            title: 'Verifikasi Dokter',
-                            value: Text('Bukan Melanoma',
-                                style: AppTypograph.label2.regular.copyWith(
-                                  color: AppColor.blackColor,
-                                )),
-                          ),
-                          const SizedBox(height: 12),
-                          VerifikasiItem(
-                            title: 'Catatan',
-                            value:
-                                Text('Pasien tersebut tidak menderita melanoma',
-                                    style: AppTypograph.label2.regular.copyWith(
-                                      color: AppColor.blackColor,
-                                    )),
-                          ),
-                          const SizedBox(height: 12),
-                          VerifikasiItem(
-                            title: 'Detail',
-                            value: AppButton(
-                                padding: 8,
-                                onPressed: () {},
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.remove_red_eye_outlined,
-                                          size: 16,
-                                          color: AppColor.whiteColor,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Detail Pengajuan',
-                                          style: AppTypograph.label3.bold
-                                              .copyWith(
-                                                  color: AppColor.whiteColor),
-                                        ),
-                                      ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      VerifikasiItem(
+                        title: 'Tanggal Pengajuan',
+                        value: Text('22/06/2024',
+                            style: AppTypograph.label2.regular.copyWith(
+                              color: AppColor.blackColor,
+                            )),
+                      ),
+                      const SizedBox(height: 12),
+                      VerifikasiItem(
+                        title: 'Pasien',
+                        value: Text('Muhammad Nur Shodiq',
+                            style: AppTypograph.label2.regular.copyWith(
+                              color: AppColor.blackColor,
+                            )),
+                      ),
+                      const SizedBox(height: 12),
+                      VerifikasiItem(
+                        title: 'Diagnosis AI',
+                        value: Text('0.09% Melanoma',
+                            style: AppTypograph.label2.bold.copyWith(
+                              color: AppColor.greenColor,
+                            )),
+                      ),
+                      const SizedBox(height: 12),
+                      VerifikasiItem(
+                        title: 'Verifikasi Dokter',
+                        value: Text('Bukan Melanoma',
+                            style: AppTypograph.label2.regular.copyWith(
+                              color: AppColor.blackColor,
+                            )),
+                      ),
+                      const SizedBox(height: 12),
+                      VerifikasiItem(
+                        title: 'Catatan',
+                        value: Text('Pasien tersebut tidak menderita melanoma',
+                            style: AppTypograph.label2.regular.copyWith(
+                              color: AppColor.blackColor,
+                            )),
+                      ),
+                      const SizedBox(height: 12),
+                      VerifikasiItem(
+                        title: 'Detail',
+                        value: AppButton(
+                            padding: 8,
+                            onPressed: () {
+                              Navigator.pushNamed(context, DetailPengajuanScreen.route);
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      size: 16,
+                                      color: AppColor.whiteColor,
                                     ),
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ));
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Detail Pengajuan',
+                                      style: AppTypograph.label3.bold
+                                          .copyWith(color: AppColor.whiteColor),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ),
+                    ],
+                  ));
                 }),
           ),
         ],

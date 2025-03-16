@@ -3,7 +3,7 @@ import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/models/provider_model.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/daftar_pengajuan_screen.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/screens/riwayat_verifikasi.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/home/presentation/screens/home_doctor_screen.dart';
+import 'package:myskin_mobile/pages/dokter/dashboard/home/presentation/screens/home_doctor_screen.dart';
 import 'package:provider/provider.dart';
 
 class NavbarDoctorScreen extends StatelessWidget {
