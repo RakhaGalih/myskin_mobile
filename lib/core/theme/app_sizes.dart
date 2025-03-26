@@ -10,6 +10,7 @@ class AppSizes {
   const AppSizes(this.context);
   double get appWidth => MediaQuery.of(context).size.width;
   double get appHeight => MediaQuery.of(context).size.height;
+  double get appTopSafeArea => MediaQuery.of(context).padding.top;
   double get authDevider => 20;
   double get authHeaderHeigth => MediaQuery.of(context).size.height * 0.4;
   double get size30 => MediaQuery.of(context).size.shortestSide * 0.3;

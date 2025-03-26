@@ -3,7 +3,8 @@ import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
-import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/card_container.dart';
+import 'package:myskin_mobile/core/components/card_container.dart';
+import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 
 class DaftarPengajuanScreen extends StatelessWidget {
@@ -14,33 +15,10 @@ class DaftarPengajuanScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(context.as.loginPadding),
-            decoration: BoxDecoration(
-              color: AppColor.whiteColor,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColor.greyTextColor.withOpacity(0.1),
-                  offset: const Offset(0.0, 3.0),
-                  blurRadius: 12.0,
-                ),
-              ],
-            ),
-            child: SafeArea(
-              child: Center(
-                child: Text(
-                  'Daftar Pengajuan Umum',
-                  style: AppTypograph.heading2.bold.copyWith(
-                    color: AppColor.primaryColor,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const DevAppbar(title: 'Daftar Pengajuan'),
           Expanded(
             child: ListView.builder(
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.symmetric(horizontal: context.as.padding),
                 itemCount: 4,
                 itemBuilder: (context, index) {
                   return CardContainer(

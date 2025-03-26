@@ -8,24 +8,27 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/icon_item.dart';
 
-class DetailPengajuanScreen extends StatefulWidget {
-  static const route = '/detailPengajuan';
-  const DetailPengajuanScreen({super.key});
+class DetailRiwayatPengajuanPatientScreen extends StatefulWidget {
+  static const route = '/detailRiwayatPengajuanPasien';
+  const DetailRiwayatPengajuanPatientScreen({super.key});
 
   @override
-  State<DetailPengajuanScreen> createState() => _DetailPengajuanScreenState();
+  State<DetailRiwayatPengajuanPatientScreen> createState() =>
+      _DetailRiwayatPengajuanPatientScreenState();
 }
 
-class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
-  bool? _selectedRadioButton;
-  final TextEditingController _catatanController = TextEditingController();
+class _DetailRiwayatPengajuanPatientScreenState
+    extends State<DetailRiwayatPengajuanPatientScreen> {
+  final TextEditingController _catatanController = TextEditingController(
+    text: 'Jangan lupa minum obat',
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           const DevAppbar(
-            title: 'Detail Pengajuan',
+            title: 'Detail Riwayat Pengajuan',
             isBack: true,
           ),
           Expanded(
@@ -36,9 +39,17 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 16),
+                    Center(
+                      child: Text('Hasil deteksi sudah diverifikasi dokter',
+                          textAlign: TextAlign.center,
+                          style: AppTypograph.label1.bold.copyWith(
+                            color: AppColor.blackColor,
+                          )),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                         vertical: 20),
+                          vertical: 20),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
@@ -67,6 +78,20 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                             ),
                           ),
                         )),
+                    CardContainer(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          Text('Diverifikasi Oleh',
+                              style: AppTypograph.heading2.bold.copyWith(
+                                color: AppColor.blackColor,
+                              )),
+                          const SizedBox(height: 12),
+                          Text('Muhammad Nur Shodiq',
+                              style: AppTypograph.label1.regular.copyWith(
+                                color: AppColor.blackColor,
+                              )),
+                        ])),
                     CardContainer(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,70 +182,19 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    Text('Verifikasi Hasil Deteksi',
-                        style: AppTypograph.heading2.bold.copyWith(
-                          color: AppColor.blackColor,
-                        )),
-                    const SizedBox(
-                      height: 16,
+                    Center(
+                      child: Text('Catatan Dokter',
+                          textAlign: TextAlign.center,
+                          style: AppTypograph.heading2.bold.copyWith(
+                            color: AppColor.blackColor,
+                          )),
                     ),
                     CardContainer(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '*Verifikasi Melanoma',
-                          style: AppTypograph.label2.bold
-                              .copyWith(color: AppColor.blackColor),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: RadioListTile<bool>(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(
-                                  'Melanoma',
-                                  style: AppTypograph.label3.regular,
-                                ),
-                                value: true,
-                                groupValue: _selectedRadioButton,
-                                fillColor: const WidgetStatePropertyAll(
-                                    AppColor.primaryColor),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedRadioButton = value!;
-                                  });
-                                },
-                                dense: true,
-                              ),
-                            ),
-                            Expanded(
-                              child: RadioListTile<bool>(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(
-                                  'Bukan Melanoma',
-                                  style: AppTypograph.label3.regular,
-                                ),
-                                fillColor: const WidgetStatePropertyAll(
-                                    AppColor.primaryColor),
-                                value: false,
-                                groupValue: _selectedRadioButton,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedRadioButton = value!;
-                                  });
-                                },
-                                dense: true,
-                              ),
-                            ),
-                          ],
-                        ),
-                        AppTextField(
-                          title: 'Catatan:',
-                          controller: _catatanController,
-                          minLines: 5,
-                        )
-                      ],
+                        child: AppTextField(
+                      title: 'Catatan:',
+                      isReadOnly: true,
+                      controller: _catatanController,
+                      minLines: 5,
                     ))
                   ],
                 ),

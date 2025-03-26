@@ -14,10 +14,7 @@ class CardContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(
-        horizontal: context.as.loginPadding,
-        vertical: 8,
-      ),
+      margin: EdgeInsets.only(top: context.as.padding),
       padding: EdgeInsets.all(context.as.padding),
       decoration: BoxDecoration(
         color: AppColor.whiteColor,

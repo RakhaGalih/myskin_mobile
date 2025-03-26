@@ -11,6 +11,7 @@ class AppTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
   final bool isPassword;
+  final bool isReadOnly;
   final bool isNumber;
   final String? hintext;
 
@@ -22,6 +23,7 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.isPassword = false,
+    this.isReadOnly = false,
     this.isNumber = false,
     this.hintext,
   });
@@ -45,6 +47,9 @@ class _AppTextFieldState extends State<AppTextField> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+            readOnly: widget.isReadOnly,
+            minLines: (widget.minLines == null) ? 1 : widget.minLines,
+            maxLines: (widget.minLines == null) ? 1 : widget.minLines,
             keyboardType: (widget.isNumber) ? TextInputType.number : null,
             inputFormatters: (widget.isNumber)
                 ? <TextInputFormatter>[

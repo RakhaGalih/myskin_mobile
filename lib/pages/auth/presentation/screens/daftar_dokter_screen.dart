@@ -137,7 +137,12 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                         children: [
                           Expanded(
                             child: AppDropDown(
-                                kategoriItems: const ['tes', 'aa'],
+                                kategoriItems: const [
+                                  '(Sp.PD) Spesialis Penyakit Dalam',
+                                  '(Sp.B) Spesialis Bedah Umum',
+                                  '(Sp.BS) Spesialis Bedah Saraf',
+                                  '(Sp.OT) Spesialis Bedah Ortopedi'
+                                ],
                                 title: 'Spesialisasi',
                                 onItemSelected: (value) {}),
                           ),

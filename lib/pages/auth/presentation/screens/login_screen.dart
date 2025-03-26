@@ -4,6 +4,7 @@ import 'package:myskin_mobile/core/components/app_textfield.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/navbar_patient_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const route = '/login';
@@ -82,7 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 AppButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                          context, NavbarPatientScreen.route);
+                    },
                     child: SizedBox(
                       width: double.infinity,
                       child: Center(
