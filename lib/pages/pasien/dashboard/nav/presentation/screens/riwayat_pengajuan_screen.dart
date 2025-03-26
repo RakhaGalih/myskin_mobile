@@ -18,7 +18,7 @@ class RiwayatPengajuanScreen extends StatelessWidget {
       body: Column(
         children: [
           const DevAppbar(
-            title: 'Riwayat Deteksi',
+            title: 'Riwayat Pengajuan',
             isBack: true,
           ),
           Expanded(
