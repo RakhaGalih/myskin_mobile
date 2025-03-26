@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/models/provider_model.dart';
-import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/daftar_pengajuan_screen.dart';
+import 'package:myskin_mobile/pages/pasien/FAQ/presentation/screens/faq_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/home/presentation/screens/home_patient_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class NavbarPatientScreen extends StatelessWidget {
         child: Consumer<ProviderModel>(builder: (context, data, child) {
           List<Widget> widgetOptions = <Widget>[
             const HomePatientScreen(),
-            const DaftarPengajuanScreen(),
+            const FaqScreen(),
           ];
           return Scaffold(
             body: widgetOptions[data.selectedNavBar],
