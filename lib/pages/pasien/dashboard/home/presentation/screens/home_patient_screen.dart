@@ -3,7 +3,9 @@ import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/home/presentation/components/berita_carrousel.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/components/nav_card.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/deteksi_kulit_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/riwayat_deteksi_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/riwayat_pengajuan_screen.dart';
 
@@ -126,7 +128,10 @@ class HomePatientScreen extends StatelessWidget {
                   Row(
                     children: [
                       NavCard(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, DeteksiKulitScreen.route);
+                        },
                         title: 'Deteksi Kulit',
                         icon: Icons.document_scanner,
                       ),
@@ -147,7 +152,7 @@ class HomePatientScreen extends StatelessWidget {
                       NavCard(
                           onPressed: () {
                             Navigator.pushNamed(
-                              context, RiwayatPengajuanScreen.route);
+                                context, RiwayatPengajuanScreen.route);
                           },
                           title: 'Riwayat Pengajuan',
                           icon: Icons.file_present),
@@ -249,6 +254,17 @@ class HomePatientScreen extends StatelessWidget {
                         ),
                     ],
                   )),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text('Berita',
+                      style: AppTypograph.label1.bold.copyWith(
+                        color: AppColor.blackColor,
+                      )),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  const BeritaCarrousel()
                 ],
               ),
             )
