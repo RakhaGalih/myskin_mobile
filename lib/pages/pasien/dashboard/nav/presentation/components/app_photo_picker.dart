@@ -78,7 +78,7 @@ class _AppPhotoPickerState extends State<AppPhotoPicker> {
         : Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(8),
                 child: Image.file(_imageService.selectedImage!),
               ),
               Align(
