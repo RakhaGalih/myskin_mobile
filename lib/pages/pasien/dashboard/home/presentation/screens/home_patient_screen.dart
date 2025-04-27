@@ -37,7 +37,8 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
       _showSpinner = true;
     });
     try {
-      var response = await getData('/v1/submissions');
+      String? token = await getToken();
+      var response = await getDataToken('/v1/submissions', token!);
       List<Map<String, dynamic>> parsedData = (response['data'] as List)
           .map((item) => item as Map<String, dynamic>)
           .toList();
@@ -263,9 +264,12 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                        DateFormat('dd/MM/yyyy').format(
-                                            DateTime.parse(
-                                                    ajuans[i]['submittedAt'])),
+                                      (ajuans[i]['submittedAt'] == null)
+                                          ? 'Undefined'
+                                          : DateFormat('dd/MM/yyyy').format(
+                                              DateTime.parse(
+                                                  ajuans[i]['submittedAt'])),
+                                    
                                         textAlign: TextAlign.center,
                                         style: AppTypograph.label2.regular
                                             .copyWith(
@@ -292,7 +296,7 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                        ajuans[i]['diagnosis'] ?? 'Loading...',
+                                        ajuans[i]['diagnosis'] ?? 'Undefined',
                                         textAlign: TextAlign.center,
                                         style:
                                             AppTypograph.label2.bold.copyWith(
@@ -301,7 +305,7 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                        ajuans[i]['status'] ?? 'Loading...',
+                                        ajuans[i]['status'] ?? 'Undefined',
                                         textAlign: TextAlign.center,
                                         style:
                                             AppTypograph.label2.bold.copyWith(

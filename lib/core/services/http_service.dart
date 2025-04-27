@@ -30,6 +30,7 @@ Future<Map<String, dynamic>> getDataToken(String address, String token) async {
     uri,
     headers: <String, String>{
       'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
     },
   );
 
@@ -43,20 +44,23 @@ Future<Map<String, dynamic>> getDataToken(String address, String token) async {
 }
 
 Future<Map<String, dynamic>> logout(String token) async {
-  final uri = Uri.parse("$apiURL/logout");
-  final response = await http.get(
+  final uri = Uri.parse("$apiURL/v1/auth/logout");
+  final response = await http.post(
     uri,
     headers: <String, String>{
       'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
     },
   );
 
-  if (response.statusCode == 200) {
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    print('Response body: ${response.body}');
     return jsonDecode(response.body);
   } else {
     print('Failed to load user details. Status code: ${response.statusCode}');
     print('Response body: ${response.body}');
     throw Exception('Failed to load user details');
+
   }
 }
 
