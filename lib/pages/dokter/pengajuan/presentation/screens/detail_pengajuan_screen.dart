@@ -3,6 +3,7 @@ import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/app_textfield.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
+import 'package:myskin_mobile/core/components/search_textfield.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -19,6 +20,7 @@ class DetailPengajuanScreen extends StatefulWidget {
 class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
   bool? _selectedRadioButton;
   final TextEditingController _catatanController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +30,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
             title: 'Detail Pengajuan',
             isBack: true,
           ),
+          SearchTextField(controller: _searchController),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: context.as.padding),

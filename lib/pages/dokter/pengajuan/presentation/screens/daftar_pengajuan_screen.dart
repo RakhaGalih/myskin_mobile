@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
+import 'package:myskin_mobile/core/components/card_container.dart';
+import 'package:myskin_mobile/core/components/dev_appbar.dart';
+import 'package:myskin_mobile/core/components/search_textfield.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
-import 'package:myskin_mobile/core/components/card_container.dart';
-import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 
-class DaftarPengajuanScreen extends StatelessWidget {
+class DaftarPengajuanScreen extends StatefulWidget {
   const DaftarPengajuanScreen({super.key});
 
+  @override
+  State<DaftarPengajuanScreen> createState() => _DaftarPengajuanScreenState();
+}
+
+class _DaftarPengajuanScreenState extends State<DaftarPengajuanScreen> {
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           const DevAppbar(title: 'Daftar Pengajuan'),
+          SearchTextField(controller: _searchController),
           Expanded(
             child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: context.as.padding),

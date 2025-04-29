@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
+import 'package:myskin_mobile/core/components/search_textfield.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_riwayat_pengajuan_patient_screen.dart';
 
-class RiwayatPengajuanScreen extends StatelessWidget {
+class RiwayatPengajuanScreen extends StatefulWidget {
   static const route = '/riwayatPengajuanPasien';
   const RiwayatPengajuanScreen({super.key});
 
+  @override
+  State<RiwayatPengajuanScreen> createState() => _RiwayatPengajuanScreenState();
+}
+
+class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +28,7 @@ class RiwayatPengajuanScreen extends StatelessWidget {
             title: 'Riwayat Pengajuan',
             isBack: true,
           ),
+          SearchTextField(controller: _searchController),
           Expanded(
             child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: context.as.padding),

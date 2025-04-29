@@ -21,7 +21,6 @@ class AppDatePicker extends StatefulWidget {
 
 class _AppDatePickerState extends State<AppDatePicker> {
   DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -39,13 +38,11 @@ class _AppDatePickerState extends State<AppDatePicker> {
   }
 
   void _updateDateTime() {
-    if (_selectedDate != null && _selectedTime != null) {
+    if (_selectedDate != null) {
       final DateTime combinedDateTime = DateTime(
         _selectedDate!.year,
         _selectedDate!.month,
         _selectedDate!.day,
-        _selectedTime!.hour,
-        _selectedTime!.minute,
       );
       widget.onDateTimeSelected(combinedDateTime); // Call the DateTime callback
     }
