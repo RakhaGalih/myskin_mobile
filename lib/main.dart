@@ -4,6 +4,7 @@ import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_dokter_scre
 import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/login_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/onboarding_screen.dart';
+import 'package:myskin_mobile/pages/dokter/dashboard/home/presentation/screens/daftar_pasien_screen.dart';
 import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_deteksi_patient_screen.dart';
@@ -46,6 +47,8 @@ class MainApp extends StatelessWidget {
             const DetailRiwayatPengajuanPatientScreen(),
         DetailDeteksiPatientScreen.route: (context) =>
             const DetailDeteksiPatientScreen(),
+        DaftarPasienScreen.route: (context) => const DaftarPasienScreen(),
+        
       },
     );
   }

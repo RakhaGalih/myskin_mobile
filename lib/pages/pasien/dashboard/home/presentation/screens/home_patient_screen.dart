@@ -211,10 +211,24 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    Text('Ajuan Verifikasi',
-                        style: AppTypograph.label1.bold.copyWith(
-                          color: AppColor.blackColor,
-                        )),
+                    Row(
+                      children: [
+                        Text('Ajuan Verifikasi',
+                            style: AppTypograph.label1.bold.copyWith(
+                              color: AppColor.blackColor,
+                            )),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, RiwayatPengajuanScreen.route);
+                          },
+                          child: Text('See more',
+                              style: AppTypograph.label3.bold.copyWith(
+                                color: AppColor.primaryColor,
+                              )),
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 4,
                     ),
@@ -264,12 +278,11 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      (ajuans[i]['submittedAt'] == null)
-                                          ? 'Undefined'
-                                          : DateFormat('dd/MM/yyyy').format(
-                                              DateTime.parse(
-                                                  ajuans[i]['submittedAt'])),
-                                    
+                                        (ajuans[i]['submittedAt'] == null)
+                                            ? 'Undefined'
+                                            : DateFormat('dd/MM/yyyy').format(
+                                                DateTime.parse(
+                                                    ajuans[i]['submittedAt'])),
                                         textAlign: TextAlign.center,
                                         style: AppTypograph.label2.regular
                                             .copyWith(

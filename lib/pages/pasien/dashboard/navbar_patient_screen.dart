@@ -86,6 +86,7 @@ class _NavbarPatientScreenState extends State<NavbarPatientScreen> {
                 ],
                 currentIndex: data.selectedNavBar,
                 selectedItemColor: AppColor.primaryColor,
+                unselectedItemColor: AppColor.greyTextColor,
                 onTap: (index) {
                   if (index == 2) {
                     _logout();

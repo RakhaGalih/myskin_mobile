@@ -20,7 +20,6 @@ class DetailPengajuanScreen extends StatefulWidget {
 class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
   bool? _selectedRadioButton;
   final TextEditingController _catatanController = TextEditingController();
-  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +29,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
             title: 'Detail Pengajuan',
             isBack: true,
           ),
-          SearchTextField(controller: _searchController),
+          
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: context.as.padding),

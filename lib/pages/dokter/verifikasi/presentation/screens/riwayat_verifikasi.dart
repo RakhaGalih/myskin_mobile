@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
+import 'package:myskin_mobile/core/components/search_textfield.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -8,15 +9,22 @@ import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
 
-class RiwayatVerifikasiScreen extends StatelessWidget {
+class RiwayatVerifikasiScreen extends StatefulWidget {
   const RiwayatVerifikasiScreen({super.key});
 
+  @override
+  State<RiwayatVerifikasiScreen> createState() => _RiwayatVerifikasiScreenState();
+}
+
+class _RiwayatVerifikasiScreenState extends State<RiwayatVerifikasiScreen> {
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           const DevAppbar(title: 'Riwayat Verifikasi'),
+          SearchTextField(controller: _searchController),
           Expanded(
             child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: context.as.padding),
@@ -86,10 +94,13 @@ class RiwayatVerifikasiScreen extends StatelessWidget {
                                       color: AppColor.whiteColor,
                                     ),
                                     const SizedBox(width: 4),
-                                    Text(
-                                      'Detail Pengajuan',
-                                      style: AppTypograph.label3.bold
-                                          .copyWith(color: AppColor.whiteColor),
+                                    Expanded(
+                                      child: Text(
+                                        'Detail Pengajuan',
+                                        textAlign: TextAlign.center,
+                                        style: AppTypograph.label3.bold
+                                            .copyWith(color: AppColor.whiteColor),
+                                      ),
                                     ),
                                   ],
                                 ),
