@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_theme.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_dokter_screen.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_screen.dart';
@@ -18,19 +20,46 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  late String? role = "";
+  bool _showSpinner = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    setState(() {
+      _showSpinner = true;
+    });
+    role = await getRole();
+    print(role);
+    setState(() {
+      _showSpinner = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: AppTheme.theme,
-      home: const Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+      home: ModalProgressHUD(
+        inAsyncCall: _showSpinner,
+        child: (role == 'patient')
+            ? const NavbarPatientScreen()
+            : (role == 'doctor')
+                ? const NavbarDoctorScreen()
+                : const OnboardingScreen(),
       ),
-      initialRoute: OnboardingScreen.route,
       routes: {
         OnboardingScreen.route: (context) => const OnboardingScreen(),
         LoginScreen.route: (context) => const LoginScreen(),
@@ -48,7 +77,6 @@ class MainApp extends StatelessWidget {
         DetailDeteksiPatientScreen.route: (context) =>
             const DetailDeteksiPatientScreen(),
         DaftarPasienScreen.route: (context) => const DaftarPasienScreen(),
-        
       },
     );
   }

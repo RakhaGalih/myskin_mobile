@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/services/image_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -75,31 +76,54 @@ class _AppPhotoPickerState extends State<AppPhotoPicker> {
               ),
             ),
           )
-        : Stack(
+        : Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(_imageService.selectedImage!),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  margin: const EdgeInsets.all(12),
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColor.greyColor.withOpacity(0.5),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(_imageService.selectedImage!),
                   ),
-                  child: GestureDetector(
-                    onTap: _clearImage,
-                    child: const Icon(
-                      Icons.close,
-                      color: AppColor.whiteColor,
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.all(12),
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColor.greyColor.withOpacity(0.5),
+                      ),
+                      child: GestureDetector(
+                        onTap: _clearImage,
+                        child: const Icon(
+                          Icons.close,
+                          color: AppColor.whiteColor,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
+              const SizedBox(height: 12),
+              AppButton(
+                  isOutline: true,
+                  child: Text(
+                    'Ganti Foto',
+                    style: AppTypograph.label1.regular
+                        .copyWith(color: AppColor.primaryColor),
+                  ),
+                  onPressed: () {
+                    _clearImage();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            CameraPage(onImageCaptured: _onImageCaptured),
+                      ),
+                    );
+                  })
             ],
           );
   }

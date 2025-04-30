@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/core/services/image_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
@@ -20,6 +21,7 @@ class _CameraPageState extends State<CameraPage> {
   CameraController? _cameraController;
   List<CameraDescription> _availableCameras = [];
   int _currentCameraIndex = 0; // Track the current camera (0: back, 1: front)
+  bool _showSpinner = false;
 
   @override
   void initState() {
@@ -46,6 +48,9 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   void _captureImage() async {
+    setState(() {
+      _showSpinner = true;
+    });
     if (_cameraController != null && _cameraController!.value.isInitialized) {
       try {
         final XFile file = await _cameraController!.takePicture();
@@ -55,6 +60,9 @@ class _CameraPageState extends State<CameraPage> {
         print("Error capturing image: $e");
       }
     }
+    setState(() {
+      _showSpinner = false;
+    });
   }
 
   void _imageBrowse() async {
@@ -86,69 +94,72 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Column(children: [
-          const DevAppbar(title: 'Tambah Foto'),
-          _cameraController != null && _cameraController!.value.isInitialized
-              ? Expanded(child: CameraPreview(_cameraController!))
-              : const Expanded(
-                  child: Center(
-                      child: CircularProgressIndicator(
-                    color: AppColor.primaryColor,
-                  )),
-                ),
-        ]),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: _imageBrowse,
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: AppColor.whiteColor),
-                    child: const Icon(
-                      Icons.photo_album,
-                      color: Colors.black,
+      body: ModalProgressHUD(
+        inAsyncCall: _showSpinner,
+        child: Stack(children: [
+          Column(children: [
+            const DevAppbar(title: 'Tambah Foto'),
+            _cameraController != null && _cameraController!.value.isInitialized
+                ? Expanded(child: CameraPreview(_cameraController!))
+                : const Expanded(
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: AppColor.primaryColor,
+                    )),
+                  ),
+          ]),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: _imageBrowse,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: AppColor.whiteColor),
+                      child: const Icon(
+                        Icons.photo_album,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: _captureImage,
-                  child: Container(
-                    width: 70,
-                    height: 70,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: AppColor.primaryColor),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: AppColor.whiteColor,
+                  GestureDetector(
+                    onTap: _captureImage,
+                    child: Container(
+                      width: 70,
+                      height: 70,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: AppColor.primaryColor),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: AppColor.whiteColor,
+                      ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: _switchCamera,
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: AppColor.whiteColor),
-                    child: const Icon(
-                      Icons.switch_camera,
-                      color: Colors.black,
+                  GestureDetector(
+                    onTap: _switchCamera,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: AppColor.whiteColor),
+                      child: const Icon(
+                        Icons.switch_camera,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
-          ),
-        )
-      ]),
+          )
+        ]),
+      ),
     );
   }
 }
