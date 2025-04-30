@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:myskin_mobile/core/components/app_button.dart';
+import 'package:myskin_mobile/core/components/app_textfield.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
@@ -17,6 +19,8 @@ class DeteksiKulitScreen extends StatefulWidget {
 
 class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
   File? imageFile;
+  final TextEditingController _keluhanController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +46,10 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                   imageFile = image;
                 });
               }),
-              SizedBox(height: context.as.loginPadding),
               if (imageFile == null)
                 Column(
                   children: [
+                    SizedBox(height: context.as.loginPadding),
                     Row(
                       children: [
                         Text('1. Format: JPEG, PNG ',
@@ -79,6 +83,47 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                         )
                       ],
                     ),
+                  ],
+                ),
+              if (imageFile != null)
+                Column(
+                  children: [
+                    SizedBox(height: context.as.loginPadding),
+                    Form(
+                      key: _formKey,
+                      child: AppTextField(
+                        title: 'Keluhan:',
+                        controller: _keluhanController,
+                        minLines: 5,
+                        onChanged: (value) {
+                          setState(() {});
+                          print(value);
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                          colorButton:
+                              (_keluhanController.text.isEmpty)
+                                  ? AppColor.greyTextColor
+                                  : AppColor.primaryColor,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {}
+                          },
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                'Kirim',
+                                style: AppTypograph.label1.bold
+                                    .copyWith(color: AppColor.whiteColor),
+                              ),
+                            ),
+                          )),
+                    )
                   ],
                 ),
             ],
