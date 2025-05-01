@@ -60,7 +60,6 @@ Future<Map<String, dynamic>> logout(String token) async {
     print('Failed to load user details. Status code: ${response.statusCode}');
     print('Response body: ${response.body}');
     throw Exception('Failed to load user details');
-
   }
 }
 
@@ -105,7 +104,7 @@ Future<dynamic> postDataTokenWithImage(
   var mimeType = lookupMimeType(imageFile!.path);
   var bytes = await File.fromUri(Uri.parse(imageFile.path)).readAsBytes();
   http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
-      'gambar', bytes,
+      'image', bytes,
       filename: basename(imageFile.path),
       contentType: MediaType.parse(mimeType.toString()));
   request.fields.addAll(data);

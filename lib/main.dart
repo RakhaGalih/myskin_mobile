@@ -43,6 +43,8 @@ class _MainAppState extends State<MainApp> {
     });
     role = await getRole();
     print(role);
+    String? token = await getToken();
+    print(token);
     setState(() {
       _showSpinner = false;
     });

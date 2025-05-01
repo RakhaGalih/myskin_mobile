@@ -23,11 +23,37 @@ class HomePatientScreen extends StatefulWidget {
 class _HomePatientScreenState extends State<HomePatientScreen> {
   List<Map<String, dynamic>> ajuans = [];
   String error = "";
+  String nama = "Loading...";
   bool _showSpinner = false;
   @override
   void initState() {
     super.initState();
+    getAkun();
     getAjuan();
+  }
+
+  Future<void> getAkun() async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      var response = await getDataToken('/v1/welcome', token!);
+      print(response);
+      setState(() {
+        nama = response['firstName'];
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
   }
 
   Future<void> getAjuan() async {
@@ -111,7 +137,7 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                           ),
                                         ),
                                         Text(
-                                          'Shodiq',
+                                          nama,
                                           style: AppTypograph.label1.bold
                                               .copyWith(
                                                   color: AppColor.primaryColor),
@@ -311,10 +337,12 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                      ajuans[i]['diagnosis'] ?? 'Undefined',
+                                      '${ajuans[i]['percentage'] ?? '0.00%'} Melanoma',
                                       textAlign: TextAlign.center,
                                       style: AppTypograph.label2.bold.copyWith(
-                                        color: AppColor.greenColor,
+                                        color: (ajuans[i]['percentage'] > 50)
+                                            ? AppColor.redTextColor
+                                            : AppColor.greenColor,
                                       )),
                                 ),
                                 Expanded(
@@ -347,7 +375,6 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                 ],
               ),
             ),
-            
           ],
         ),
       ),
