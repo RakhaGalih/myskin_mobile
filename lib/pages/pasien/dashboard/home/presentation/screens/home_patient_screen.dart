@@ -63,7 +63,7 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
     });
     try {
       String? token = await getToken();
-      var response = await getDataToken('/v1/submissions', token!);
+      var response = await getDataToken('/v1/patient/submissions', token!);
       List<Map<String, dynamic>> parsedData = (response['data'] as List)
           .map((item) => item as Map<String, dynamic>)
           .toList();
@@ -337,13 +337,10 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                      '${ajuans[i]['percentage'] ?? '0.00%'} Melanoma',
+                                      '${ajuans[i]['diagnosisAi'] ?? '0.00% Melanoma'}',
                                       textAlign: TextAlign.center,
                                       style: AppTypograph.label2.bold.copyWith(
-                                        color: (ajuans[i]['percentage'] > 50)
-                                            ? AppColor.redTextColor
-                                            : AppColor.greenColor,
-                                      )),
+                                          color: AppColor.redTextColor)),
                                 ),
                                 Expanded(
                                   child: Text(

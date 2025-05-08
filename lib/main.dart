@@ -9,8 +9,6 @@ import 'package:myskin_mobile/pages/auth/presentation/screens/onboarding_screen.
 import 'package:myskin_mobile/pages/dokter/dashboard/home/presentation/screens/daftar_pasien_screen.dart';
 import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_deteksi_patient_screen.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_riwayat_pengajuan_patient_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/deteksi_kulit_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/riwayat_deteksi_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/riwayat_pengajuan_screen.dart';
@@ -74,10 +72,6 @@ class _MainAppState extends State<MainApp> {
         RiwayatDeteksiScreen.route: (context) => const RiwayatDeteksiScreen(),
         RiwayatPengajuanScreen.route: (context) =>
             const RiwayatPengajuanScreen(),
-        DetailRiwayatPengajuanPatientScreen.route: (context) =>
-            const DetailRiwayatPengajuanPatientScreen(),
-        DetailDeteksiPatientScreen.route: (context) =>
-            const DetailDeteksiPatientScreen(),
         DaftarPasienScreen.route: (context) => const DaftarPasienScreen(),
       },
     );

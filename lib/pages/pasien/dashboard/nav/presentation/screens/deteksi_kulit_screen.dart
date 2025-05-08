@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/app_textfield.dart';
+import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/icon_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/components/app_photo_picker.dart';
 
 class DeteksiKulitScreen extends StatefulWidget {
@@ -22,9 +24,10 @@ class DeteksiKulitScreen extends StatefulWidget {
 class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
   File? imageFile;
   final TextEditingController _keluhanController = TextEditingController();
-
   String error = "";
   bool _showSpinner = false;
+  bool isPengajuan = false;
+  Map<String, dynamic> ajuans = {};
 
   Future<void> _submitPengajuan() async {
     error = "";
@@ -39,13 +42,14 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
       int id = responseWelcome['accountId'];
       Map<String, String> data = {
         'patient_id': id.toString(),
-        'complaint': _keluhanController.text,
       };
-      response = await postDataTokenWithImage("/v1/submissions", data, imageFile!);
-      print('berhasil tambah laporan!');
-      if (mounted) {
-        Navigator.pop(context, 'sesuatu');
-      }
+      response =
+          await postDataTokenWithImage("/v1/submissions", data, imageFile!);
+      Map<String, dynamic> parsedData = response['data'];
+      print(response);
+      setState(() {
+        ajuans = parsedData;
+      });
       print(response['message']);
     } catch (e) {
       setState(() {
@@ -65,13 +69,13 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: ModalProgressHUD(
-          inAsyncCall: _showSpinner,
-          child: Column(children: [
-                const DevAppbar(
+      inAsyncCall: _showSpinner,
+      child: Column(children: [
+        const DevAppbar(
           title: 'Deteksi Kanker Kulit',
           isBack: true,
-                ),
-                Expanded(
+        ),
+        Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(context.as.loginPadding),
             child: Column(
@@ -83,10 +87,11 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                   ),
                 ),
                 SizedBox(height: context.as.loginPadding),
-                AppPhotoPicker(onImageSelected: (image) {
+                AppPhotoPicker(onImageSelected: (image) async {
                   setState(() {
                     imageFile = image;
                   });
+                  await _submitPengajuan();
                 }),
                 if (imageFile == null)
                   Column(
@@ -130,6 +135,57 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                 if (imageFile != null)
                   Column(
                     children: [
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: CardContainer(
+                                child: IconItem(
+                                    title: 'Melanoma',
+                                    image: 'assets/icons/melanoma_icon.png',
+                                    value: 'iya',
+                                    color: AppColor.blackColor)),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: CardContainer(
+                                child: IconItem(
+                                    title: 'Keakuratan',
+                                    image: 'assets/icons/spedometer_icon.png',
+                                    value: '${ajuans['percentage']}% '
+                                        ' ${ajuans['diagnosisAi']}',
+                                    color: AppColor.maroonColor)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: AppButton(
+                            colorButton: AppColor.primaryColor,
+                            isOutline: isPengajuan,
+                            onPressed: () {
+                              setState(() {
+                                isPengajuan = !isPengajuan;
+                              });
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Ajukan Verifikasi/Keluhan',
+                                  style: AppTypograph.label1.bold.copyWith(
+                                      color: isPengajuan
+                                          ? AppColor.primaryColor
+                                          : AppColor.whiteColor),
+                                ),
+                              ),
+                            )),
+                      )
+                    ],
+                  ),
+                if (isPengajuan)
+                  Column(
+                    children: [
                       SizedBox(height: context.as.loginPadding),
                       Form(
                         key: _formKey,
@@ -151,9 +207,9 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                             colorButton: (_keluhanController.text.isEmpty)
                                 ? AppColor.greyTextColor
                                 : AppColor.primaryColor,
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                _submitPengajuan();
+                                await _submitPengajuan();
                               } else {
                                 print('error');
                               }
@@ -174,8 +230,8 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
               ],
             ),
           ),
-                ),
-              ]),
-        ));
+        ),
+      ]),
+    ));
   }
 }

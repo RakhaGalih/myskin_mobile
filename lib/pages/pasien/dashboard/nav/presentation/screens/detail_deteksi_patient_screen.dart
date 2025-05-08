@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
@@ -7,9 +8,25 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/icon_item.dart';
 
-class DetailDeteksiPatientScreen extends StatelessWidget {
-  static const route = '/detailDeteksiPasien';
-  const DetailDeteksiPatientScreen({super.key});
+class DetailDeteksiPatientScreen extends StatefulWidget {
+  final Map<String, dynamic> deteksi;
+  const DetailDeteksiPatientScreen({
+    super.key,
+    required this.deteksi,
+  });
+
+  @override
+  State<DetailDeteksiPatientScreen> createState() =>
+      _DetailDeteksiPatientScreenState();
+}
+
+class _DetailDeteksiPatientScreenState
+    extends State<DetailDeteksiPatientScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +58,7 @@ class DetailDeteksiPatientScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'ID Deteksi: 16',
+                      'ID Deteksi: ${widget.deteksi['id']}',
                       style: AppTypograph.label1.bold,
                     ),
                     const SizedBox(height: 8),
@@ -58,9 +75,9 @@ class DetailDeteksiPatientScreen extends StatelessWidget {
                             ),
                           ),
                         )),
-                    const Row(
+                    Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: CardContainer(
                               child: IconItem(
                                   title: 'Melanoma',
@@ -68,34 +85,14 @@ class DetailDeteksiPatientScreen extends StatelessWidget {
                                   value: 'iya',
                                   color: AppColor.blackColor)),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: CardContainer(
                               child: IconItem(
                                   title: 'Keakuratan',
                                   image: 'assets/icons/spedometer_icon.png',
-                                  value: '99% Melanoma (Tidak aman)',
-                                  color: AppColor.maroonColor)),
-                        ),
-                      ],
-                    ),
-                    const Row(
-                      children: [
-                        Expanded(
-                          child: CardContainer(
-                              child: IconItem(
-                                  title: 'Pengajuan Verifikasi',
-                                  image: 'assets/icons/clock_icon.png',
-                                  value: 'Pending',
-                                  color: AppColor.yellowTextColor)),
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: CardContainer(
-                              child: IconItem(
-                                  title: 'Status',
-                                  image: 'assets/icons/status_icon.png',
-                                  value: 'Unverified',
+                                  value:
+                                      '${widget.deteksi['diagnosisAi'] ?? '0% Melanoma'} (Tidak aman)',
                                   color: AppColor.maroonColor)),
                         ),
                       ],
