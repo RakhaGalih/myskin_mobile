@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
@@ -14,16 +12,17 @@ class InfoCard extends StatelessWidget {
       {super.key,
       required this.title,
       required this.value,
-      required this.icon, required this.onPressed});
+      required this.icon,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: CardContainer(
-            child: SizedBox(
-      height: 100,
-      child: GestureDetector(
-        onTap: onPressed,
+        child: GestureDetector(
+      onTap: onPressed,
+      child: CardContainer(
+          child: SizedBox(
+        height: 100,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +55,7 @@ class InfoCard extends StatelessWidget {
                 ],
               )
             ]),
-      ),
-    )));
+      )),
+    ));
   }
 }

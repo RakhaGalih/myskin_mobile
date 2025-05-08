@@ -6,12 +6,16 @@ import 'package:myskin_mobile/core/theme/app_typography.dart';
 
 class SearchTextField extends StatelessWidget {
   final TextEditingController controller;
+  final String? hintText;
+  final bool isPadding;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
 
   const SearchTextField({
     super.key,
     required this.controller,
+    this.hintText,
+    this.isPadding = true,
     this.validator,
     this.onChanged,
   });
@@ -20,20 +24,23 @@ class SearchTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: context.as.padding,
-        right: context.as.padding,
-        top: context.as.padding,
-      ),
+          left: isPadding ? context.as.padding : 0,
+          right: isPadding ? context.as.padding : 0,
+          top: isPadding ? context.as.padding : 0),
       child: TextFormField(
           textAlign: TextAlign.start,
           controller: controller,
           onChanged: onChanged,
           style: AppTypograph.body1.regular,
           decoration: InputDecoration(
-            hintText: 'Cari di sini',
+            hintText: hintText ?? 'Cari di sini',
             filled: true,
             fillColor: AppColor.whiteColor,
             alignLabelWithHint: true,
+            prefixIcon: const Icon(
+              Icons.search,
+              color: AppColor.greyTextColor,
+            ),
             labelStyle: AppTypograph.body1.regular
                 .copyWith(color: AppColor.greyTextColor),
             focusedBorder: appOutlineInputBorder(AppColor.primaryColor),

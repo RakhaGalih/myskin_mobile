@@ -1,14 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
+import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/dokter/dashboard/home/presentation/components/info_card.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
-import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_riwayat_pengajuan_patient_screen.dart';
 
-class HomeDoctorScreen extends StatelessWidget {
+class HomeDoctorScreen extends StatefulWidget {
   final VoidCallback onTapPengajuan;
   final VoidCallback onTapVerifikasi;
   const HomeDoctorScreen({
@@ -16,6 +16,107 @@ class HomeDoctorScreen extends StatelessWidget {
     required this.onTapPengajuan,
     required this.onTapVerifikasi,
   });
+
+  @override
+  State<HomeDoctorScreen> createState() => _HomeDoctorScreenState();
+}
+
+class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
+  bool _showSpinner = false;
+  bool _showSpinnerPatient = false;
+  bool _showSpinnerStatistik = false;
+  String error = "";
+  List<Map<String, dynamic>> ajuans = [];
+  List<Map<String, dynamic>> listPatients = [];
+  int pasien = 0;
+  int menungguVerifikasi = 0;
+  int terverifikasi = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getPatient();
+    _getStatistik();
+  }
+
+  Future<void> getAjuan() async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      var response = await getDataToken('/v1/patient/submissions', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        ajuans = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+  }
+
+  Future<void> getPatient() async {
+    error = "";
+    setState(() {
+      _showSpinnerPatient = true;
+    });
+    try {
+      String? token = await getToken();
+      var response = await getDataToken('/v1/doctor/patients?limit=5', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        listPatients = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    }
+    setState(() {
+      _showSpinnerPatient = false;
+    });
+  }
+
+  Future<void> _getStatistik() async {
+    error = "";
+    setState(() {
+      _showSpinnerStatistik = true;
+    });
+    try {
+      String? token = await getToken();
+      var response = await getDataToken('/v1/doctor/dashboard/stats', token!);
+      Map<String, dynamic> parsedData = response['data'];
+      print(response);
+      setState(() {
+        pasien = parsedData['totalPatients'];
+        menungguVerifikasi = parsedData['pending'];
+        terverifikasi = parsedData['verified'];
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    }
+    setState(() {
+      _showSpinnerStatistik = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +234,9 @@ class HomeDoctorScreen extends StatelessWidget {
                   Row(
                     children: [
                       InfoCard(
-                          title: 'Pasien',
-                          value: '547',
+                          title:
+                              (_showSpinnerStatistik) ? 'Loading...' : 'Pasien',
+                          value: pasien.toString(),
                           icon: Icons.person_2_outlined,
                           onPressed: () {
                             Navigator.pushNamed(context, '/daftarPasien');
@@ -143,17 +245,21 @@ class HomeDoctorScreen extends StatelessWidget {
                         width: 12,
                       ),
                       InfoCard(
-                          title: 'Menunggu Verifikasi',
-                          value: '547',
+                          title: (_showSpinnerStatistik)
+                              ? 'Loading...'
+                              : 'Menunggu Verifikasi',
+                          value: menungguVerifikasi.toString(),
                           icon: Icons.timer_outlined,
-                          onPressed: onTapPengajuan),
+                          onPressed: widget.onTapPengajuan),
                       const SizedBox(
                         width: 12,
                       ),
                       InfoCard(
-                          onPressed: onTapVerifikasi,
-                          title: 'Terverifikasi',
-                          value: '547',
+                          onPressed: widget.onTapVerifikasi,
+                          title: (_showSpinnerStatistik)
+                              ? 'Loading...'
+                              : 'Terverifikasi',
+                          value: terverifikasi.toString(),
                           icon: Icons.check_circle_outline),
                     ],
                   ),
@@ -169,7 +275,7 @@ class HomeDoctorScreen extends StatelessWidget {
                           )),
                       const Spacer(),
                       GestureDetector(
-                        onTap: onTapPengajuan,
+                        onTap: widget.onTapPengajuan,
                         child: Text('See more',
                             style: AppTypograph.label3.bold.copyWith(
                               color: AppColor.primaryColor,
@@ -330,37 +436,49 @@ class HomeDoctorScreen extends StatelessWidget {
                               ),
                             ),
                           ]),
-                      for (int i = 0; i < 4; i++)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 8,
+                      (_showSpinnerPatient)
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColor.primaryColor,
+                              ),
+                            )
+                          : const SizedBox(),
+                      if (listPatients.isNotEmpty)
+                        for (int i = 0; i < listPatients.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(listPatients[i]['name'],
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          AppTypograph.label2.regular.copyWith(
+                                        color: AppColor.blackColor,
+                                      )),
+                                ),
+                                Expanded(
+                                  child: Text(listPatients[i]['phone'],
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          AppTypograph.label2.regular.copyWith(
+                                        color: AppColor.blackColor,
+                                      )),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      '${listPatients[i]['submissionCount']}',
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          AppTypograph.label2.regular.copyWith(
+                                        color: AppColor.blackColor,
+                                      )),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text('Muhammad Nur Shodiq',
-                                    textAlign: TextAlign.center,
-                                    style: AppTypograph.label2.regular.copyWith(
-                                      color: AppColor.blackColor,
-                                    )),
-                              ),
-                              Expanded(
-                                child: Text('082246881193',
-                                    textAlign: TextAlign.center,
-                                    style: AppTypograph.label2.regular.copyWith(
-                                      color: AppColor.blackColor,
-                                    )),
-                              ),
-                              Expanded(
-                                child: Text('1',
-                                    textAlign: TextAlign.center,
-                                    style: AppTypograph.label2.regular.copyWith(
-                                      color: AppColor.blackColor,
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
                     ],
                   )),
                 ],

@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': _passwordController.text,
       };
       response = await postData("/v1/auth/login", data);
-      
+
       Map<String, dynamic> userData = response['data'];
       String token = response['token']; // Ambil token dari response
       await saveToken(token, userData['role']);
@@ -149,11 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     AppButton(
-                        onPressed: (){
+                        onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _login();
                           }
-                        } ,
+                        },
                         child: SizedBox(
                           width: double.infinity,
                           child: Center(
@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(
                       height: 12,
                     ),
-                    RichText(
+                    /*RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
                             style: AppTypograph.label2.regular
@@ -187,7 +187,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: AppTypograph.label2.regular
                                       .copyWith(color: AppColor.blueColor)),
                               const TextSpan(text: 'untuk Login sebagai dokter.')
-                            ])),
+                            ])),*/
+                    Text(
+                      error,
+                      style: AppTypograph.label2.regular
+                          .copyWith(color: AppColor.redTextColor),
+                    ),
                     const SizedBox(
                       height: 12,
                     ),

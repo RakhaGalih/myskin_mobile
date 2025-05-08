@@ -6,6 +6,7 @@ import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/app_textfield.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
+import 'package:myskin_mobile/core/components/search_textfield.dart';
 import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
@@ -24,10 +25,13 @@ class DeteksiKulitScreen extends StatefulWidget {
 class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
   File? imageFile;
   final TextEditingController _keluhanController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String error = "";
   bool _showSpinner = false;
   bool isPengajuan = false;
   Map<String, dynamic> ajuans = {};
+  List<Map<String, dynamic>> listDokter = [];
+  int selectedDoctorIndex = 0;
 
   Future<void> _submitPengajuan() async {
     error = "";
@@ -62,6 +66,68 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
     setState(() {
       _showSpinner = false;
     });
+  }
+
+  Future<void> _ajukanVerifikasi() async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    dynamic response = {};
+    try {
+      String? token = await getToken();
+      var responseWelcome = await getDataToken('/v1/welcome', token!);
+
+      int id = responseWelcome['accountId'];
+      Map<String, String> data = {
+        'patient_id': id.toString(),
+      };
+      response =
+          await postDataTokenWithImage("/v1/submissions", data, imageFile!);
+      Map<String, dynamic> parsedData = response['data'];
+      print(response);
+      setState(() {
+        ajuans = parsedData;
+      });
+      print(response['message']);
+    } catch (e) {
+      setState(() {
+        _showSpinner = false;
+        error = "${response['message']}";
+      });
+      print('Login error: $e');
+      print(response);
+    }
+    setState(() {
+      _showSpinner = false;
+    });
+  }
+
+  Future<void> _getListDokter() async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      var response = await getDataToken('/v1/patient/doctors?limit=5', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        listDokter = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -163,10 +229,13 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                         child: AppButton(
                             colorButton: AppColor.primaryColor,
                             isOutline: isPengajuan,
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
                                 isPengajuan = !isPengajuan;
                               });
+                              if (isPengajuan) {
+                                await _getListDokter();
+                              }
                             },
                             child: SizedBox(
                               width: double.infinity,
@@ -190,7 +259,7 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                       Form(
                         key: _formKey,
                         child: AppTextField(
-                          title: 'Keluhan:',
+                          title: 'Keluhan',
                           controller: _keluhanController,
                           minLines: 5,
                           onChanged: (value) {
@@ -201,6 +270,79 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
+                      SearchTextField(
+                        controller: _searchController,
+                        hintText: 'Cari dokter',
+                        isPadding: false,
+                      ),
+                      SizedBox(
+                          height: 280,
+                          child: ListView.builder(
+                            itemCount: listDokter.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => Container(
+                              margin: EdgeInsets.only(
+                                  top: context.as.padding,
+                                  right: context.as.padding,
+                                  bottom: context.as.padding),
+                              padding: EdgeInsets.all(context.as.padding),
+                              decoration: BoxDecoration(
+                                color: AppColor.whiteColor,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: selectedDoctorIndex == index
+                                        ? AppColor.primaryColor
+                                        : AppColor.whiteColor),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        AppColor.greyTextColor.withOpacity(0.1),
+                                    blurRadius: 12.0,
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.asset(
+                                      'assets/images/profilDokter.png',
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        listDokter[index]['name'] ??
+                                            'Tidak ada',
+                                        textAlign: TextAlign.center,
+                                        style:
+                                            AppTypograph.label2.bold.copyWith(
+                                          color: AppColor.blackColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  AppButton(
+                                    isOutline: index == selectedDoctorIndex,
+                                      padding: 4,
+                                      child: Text(index == selectedDoctorIndex?'Dokter Dipilih':'Pilih Dokter',
+                                          style: AppTypograph.label2.bold
+                                              .copyWith(
+                                                  color: index == selectedDoctorIndex? AppColor.primaryColor :AppColor.whiteColor)),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedDoctorIndex = index;
+                                        });
+                                      })
+                                ],
+                              ),
+                            ),
+                          )),
                       SizedBox(
                         width: double.infinity,
                         child: AppButton(
@@ -224,7 +366,7 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                                 ),
                               ),
                             )),
-                      )
+                      ),
                     ],
                   ),
               ],
