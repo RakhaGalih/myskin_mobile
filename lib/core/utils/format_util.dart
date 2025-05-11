@@ -1,4 +1,6 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:myskin_mobile/core/theme/app_colors.dart';
 
 extension StringExtensions on String {
   String toCamelCase() {
@@ -70,4 +72,32 @@ int getAge(String dateString) {
   }
 
   return age;
+}
+
+double doublePercentageToString(String input) {
+
+// Ekstrak angka dengan regex
+  final regex = RegExp(r'[\d.]+'); // mencocokkan angka termasuk titik desimal
+  final match = regex.firstMatch(input);
+
+  if (match != null) {
+    double result = double.parse(match.group(0)!);
+    return result; // Output: 50.62
+  }
+  return 0.0;
+}
+
+bool isMelanoma(String input) {
+  // Mengubah input menjadi persentase
+  double percentage = doublePercentageToString(input);
+  // Misalkan kita anggap melanoma jika persentase lebih dari 50%
+  return percentage > 50.0;
+}
+
+Color getMelanomaColor(String input) {
+  if (isMelanoma(input)) {
+    return AppColor.redTextColor; // Merah
+  } else {
+    return AppColor.greenColor; // Hijau
+  }
 }
