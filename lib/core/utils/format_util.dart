@@ -57,3 +57,17 @@ String getFormattedDate(DateTime date) {
 
   return formattedDate;
 }
+
+int getAge(String dateString) {
+  DateTime birthDate = DateTime.parse(dateString);
+  DateTime today = DateTime.now();
+  int age = today.year - birthDate.year;
+
+  // Cek apakah sudah ulang tahun tahun ini atau belum
+  if (today.month < birthDate.month ||
+      (today.month == birthDate.month && today.day < birthDate.day)) {
+    age--;
+  }
+
+  return age;
+}

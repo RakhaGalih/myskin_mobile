@@ -26,7 +26,7 @@ class DetailRiwayatPengajuanPatientScreen extends StatefulWidget {
 class _DetailRiwayatPengajuanPatientScreenState
     extends State<DetailRiwayatPengajuanPatientScreen> {
   final TextEditingController _catatanController = TextEditingController(
-    text: 'Jangan lupa minum obat',
+    text: 'Tidak ada catatan',
   );
   String error = "";
   bool _showSpinner = false;
@@ -226,7 +226,9 @@ class _DetailRiwayatPengajuanPatientScreenState
                               value: ajuans['status'] ?? 'Tidak ada status',
                               color: (ajuans['status'] == 'rejected')
                                   ? AppColor.maroonColor
-                                  : AppColor.greenColor,
+                                  : (ajuans['status'] == 'pending')
+                                      ? AppColor.yellowTextColor
+                                      : AppColor.greenColor,
                             )),
                           ),
                         ],
