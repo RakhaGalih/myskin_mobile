@@ -50,3 +50,10 @@ extension RupiahFormatter on num {
     return formatter.format(this);
   }
 }
+
+String getFormattedDate(DateTime date) {
+  // Format: Hari, Tanggal Bulan Tahun
+  String formattedDate = DateFormat('EEEE, d MMMM y', 'id_ID').format(date);
+
+  return formattedDate;
+}

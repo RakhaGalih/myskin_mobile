@@ -13,6 +13,7 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/icon_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/components/app_photo_picker.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/navbar_patient_screen.dart';
 
 class DeteksiKulitScreen extends StatefulWidget {
   static const route = '/deteksiKulitPasien';
@@ -28,6 +29,7 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
   final TextEditingController _searchController = TextEditingController();
   String error = "";
   bool _showSpinner = false;
+  bool _showSpinnerDokter = false;
   bool isPengajuan = false;
   Map<String, dynamic> ajuans = {};
   List<Map<String, dynamic>> listDokter = [];
@@ -68,27 +70,26 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
     });
   }
 
-  Future<void> _ajukanVerifikasi() async {
+  Future<void> _ajukanVerifikasi(int dcotorId) async {
     error = "";
     setState(() {
       _showSpinner = true;
     });
     dynamic response = {};
     try {
-      String? token = await getToken();
-      var responseWelcome = await getDataToken('/v1/welcome', token!);
-
-      int id = responseWelcome['accountId'];
-      Map<String, String> data = {
-        'patient_id': id.toString(),
+      Map<String, dynamic> data = {
+        'doctorId': dcotorId,
+        'complaint': _keluhanController.text,
       };
-      response =
-          await postDataTokenWithImage("/v1/submissions", data, imageFile!);
-      Map<String, dynamic> parsedData = response['data'];
-      print(response);
-      setState(() {
-        ajuans = parsedData;
-      });
+      await updateDataToken('/v1/patient/submission/${ajuans['id']}', data);
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, NavbarPatientScreen.route);
+        const snackBar = SnackBar(
+          content: Text('Data berhasil ditambahkan!'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
       print(response['message']);
     } catch (e) {
       setState(() {
@@ -106,7 +107,7 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
   Future<void> _getListDokter() async {
     error = "";
     setState(() {
-      _showSpinner = true;
+      _showSpinnerDokter = true;
     });
     try {
       String? token = await getToken();
@@ -125,7 +126,35 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
       });
     } finally {
       setState(() {
-        _showSpinner = false;
+        _showSpinnerDokter = false;
+      });
+    }
+  }
+
+  Future<void> _getListDokterOnSearch(String keyword) async {
+    error = "";
+    setState(() {
+      _showSpinnerDokter = true;
+    });
+    try {
+      String? token = await getToken();
+      var response =
+          await getDataToken('/v1/patient/doctors?search=$keyword', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        listDokter = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinnerDokter = false;
       });
     }
   }
@@ -274,75 +303,115 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                         controller: _searchController,
                         hintText: 'Cari dokter',
                         isPadding: false,
+                        onChanged: (value) async {
+                          if (value!.isNotEmpty) {
+                            await _getListDokterOnSearch(value);
+                          } else {
+                            await _getListDokter();
+                          }
+                        },
                       ),
-                      SizedBox(
-                          height: 280,
-                          child: ListView.builder(
-                            itemCount: listDokter.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => Container(
-                              margin: EdgeInsets.only(
-                                  top: context.as.padding,
-                                  right: context.as.padding,
-                                  bottom: context.as.padding),
-                              padding: EdgeInsets.all(context.as.padding),
-                              decoration: BoxDecoration(
-                                color: AppColor.whiteColor,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color: selectedDoctorIndex == index
-                                        ? AppColor.primaryColor
-                                        : AppColor.whiteColor),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color:
-                                        AppColor.greyTextColor.withOpacity(0.1),
-                                    blurRadius: 12.0,
-                                  ),
-                                ],
+                      (_showSpinnerDokter)
+                          ? const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColor.primaryColor,
+                                ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: Image.asset(
-                                      'assets/images/profilDokter.png',
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.cover,
-                                    ),
+                            )
+                          : (listDokter.isEmpty)
+                              ? const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text('Tidak ada dokter'),
                                   ),
-                                  const SizedBox(height: 8),
-                                  Expanded(
-                                    child: Center(
-                                      child: Text(
-                                        listDokter[index]['name'] ??
-                                            'Tidak ada',
-                                        textAlign: TextAlign.center,
-                                        style:
-                                            AppTypograph.label2.bold.copyWith(
-                                          color: AppColor.blackColor,
-                                        ),
+                                )
+                              : SizedBox(
+                                  height: 280,
+                                  child: ListView.builder(
+                                    itemCount: listDokter.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) => Container(
+                                      margin: EdgeInsets.only(
+                                          top: context.as.padding,
+                                          right: context.as.padding,
+                                          bottom: context.as.padding),
+                                      padding:
+                                          EdgeInsets.all(context.as.padding),
+                                      decoration: BoxDecoration(
+                                        color: AppColor.whiteColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                            color: selectedDoctorIndex == index
+                                                ? AppColor.primaryColor
+                                                : AppColor.whiteColor),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: AppColor.greyTextColor
+                                                .withOpacity(0.1),
+                                            blurRadius: 12.0,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: Image.asset(
+                                              'assets/images/profilDokter.png',
+                                              width: 120,
+                                              height: 120,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Expanded(
+                                            child: SizedBox(
+                                              width: 120,
+                                              child: Center(
+                                                child: Text(
+                                                  listDokter[index]['name'] ??
+                                                      'Tidak ada',
+                                                  textAlign: TextAlign.center,
+                                                  style: AppTypograph
+                                                      .label2.bold
+                                                      .copyWith(
+                                                    color: AppColor.blackColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          AppButton(
+                                              isOutline:
+                                                  index == selectedDoctorIndex,
+                                              padding: 4,
+                                              child: Text(
+                                                  index == selectedDoctorIndex
+                                                      ? 'Dokter Dipilih'
+                                                      : 'Pilih Dokter',
+                                                  style: AppTypograph
+                                                      .label2.bold
+                                                      .copyWith(
+                                                          color: index ==
+                                                                  selectedDoctorIndex
+                                                              ? AppColor
+                                                                  .primaryColor
+                                                              : AppColor
+                                                                  .whiteColor)),
+                                              onPressed: () {
+                                                setState(() {
+                                                  selectedDoctorIndex = index;
+                                                });
+                                              })
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  AppButton(
-                                    isOutline: index == selectedDoctorIndex,
-                                      padding: 4,
-                                      child: Text(index == selectedDoctorIndex?'Dokter Dipilih':'Pilih Dokter',
-                                          style: AppTypograph.label2.bold
-                                              .copyWith(
-                                                  color: index == selectedDoctorIndex? AppColor.primaryColor :AppColor.whiteColor)),
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedDoctorIndex = index;
-                                        });
-                                      })
-                                ],
-                              ),
-                            ),
-                          )),
+                                  )),
                       SizedBox(
                         width: double.infinity,
                         child: AppButton(
@@ -351,7 +420,8 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                                 : AppColor.primaryColor,
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                await _submitPengajuan();
+                                await _ajukanVerifikasi(
+                                    listDokter[selectedDoctorIndex]['id']);
                               } else {
                                 print('error');
                               }

@@ -43,6 +43,29 @@ Future<Map<String, dynamic>> getDataToken(String address, String token) async {
   }
 }
 
+Future<Map<String, dynamic>> deleteDataToken(
+    String address, String token) async {
+  final uri = Uri.parse(apiURL + address);
+  final response = await http.delete(
+    uri,
+    headers: <String, String>{
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200 || response.statusCode == 204) {
+    return jsonDecode(response.body);
+  } else if (response.statusCode == 404) {
+    print('Data tidak ditemukan.');
+    throw Exception('Data not found');
+  } else {
+    print('Failed to delete data. Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    throw Exception('Failed to delete data');
+  }
+}
+
 Future<Map<String, dynamic>> logout(String token) async {
   final uri = Uri.parse("$apiURL/v1/auth/logout");
   final response = await http.post(
@@ -137,6 +160,21 @@ Future<dynamic> postDataToken(String address, Map<String, dynamic> body) async {
   final uri = Uri.parse(apiURL + address);
   String? token = await getToken();
   final response = await http.post(
+    uri,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode(body),
+  );
+
+  _handleResponse(response);
+}
+
+Future<dynamic> updateDataToken(String address, Map<String, dynamic> body) async {
+  final uri = Uri.parse(apiURL + address);
+  String? token = await getToken();
+  final response = await http.patch(
     uri,
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',

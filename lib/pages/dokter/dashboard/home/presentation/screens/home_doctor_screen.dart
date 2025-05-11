@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/core/utils/format_util.dart';
 import 'package:myskin_mobile/pages/dokter/dashboard/home/presentation/components/info_card.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/screens/detail_pengajuan_screen.dart';
 
@@ -31,28 +33,36 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
   int pasien = 0;
   int menungguVerifikasi = 0;
   int terverifikasi = 0;
+  String nama = "Loading...";
 
   @override
   void initState() {
     super.initState();
-    getPatient();
     _getStatistik();
+    _getAjuan();
+    _getPatient();
   }
 
-  Future<void> getAjuan() async {
+  Future<void> _getAjuan() async {
     error = "";
     setState(() {
       _showSpinner = true;
     });
     try {
       String? token = await getToken();
-      var response = await getDataToken('/v1/patient/submissions', token!);
+      var response =
+          await getDataToken('/v1/doctor/dashboard/pending?limit=5', token!);
       List<Map<String, dynamic>> parsedData = (response['data'] as List)
           .map((item) => item as Map<String, dynamic>)
           .toList();
       print(response);
       setState(() {
         ajuans = parsedData;
+      });
+      var responseWelcome = await getDataToken('/v1/welcome', token);
+      print(response);
+      setState(() {
+        nama = responseWelcome['firstName'];
       });
     } catch (e) {
       print(e);
@@ -66,7 +76,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
     }
   }
 
-  Future<void> getPatient() async {
+  Future<void> _getPatient() async {
     error = "";
     setState(() {
       _showSpinnerPatient = true;
@@ -172,7 +182,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                                           ),
                                         ),
                                         Text(
-                                          'Muhammad',
+                                          nama,
                                           style: AppTypograph.label1.bold
                                               .copyWith(
                                                   color: AppColor.primaryColor),
@@ -217,7 +227,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                           const SizedBox(
                             height: 4,
                           ),
-                          Text('Minggu, 6 Oktober 2024',
+                          Text(getFormattedDate(DateTime.now()),
                               style: AppTypograph.label1.regular)
                         ],
                       ),
@@ -322,64 +332,87 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                               ),
                             ),
                           ]),
-                      for (int i = 0; i < 4; i++)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 8,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text('22/06/2024',
-                                    textAlign: TextAlign.center,
-                                    style: AppTypograph.label2.regular.copyWith(
-                                      color: AppColor.blackColor,
-                                    )),
+                      (_showSpinner)
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColor.primaryColor,
                               ),
-                              Expanded(
-                                child: Text('Muhammad Nur Shodiq',
-                                    textAlign: TextAlign.center,
-                                    style: AppTypograph.label2.regular.copyWith(
-                                      color: AppColor.blackColor,
-                                    )),
-                              ),
-                              Expanded(
-                                child: Text('0.09% Melanoma',
-                                    textAlign: TextAlign.center,
-                                    style: AppTypograph.label2.bold.copyWith(
-                                      color: AppColor.greenColor,
-                                    )),
-                              ),
-                              Expanded(
-                                  child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, DetailPengajuanScreen.route);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                      color: AppColor.primaryColor,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.assignment,
-                                          color: AppColor.whiteColor),
-                                      const SizedBox(width: 4),
-                                      Expanded(
-                                        child: Text('Verifikasi',
-                                            style: AppTypograph.label3.medium
-                                                .copyWith(
-                                              color: AppColor.whiteColor,
-                                            )),
-                                      )
-                                    ],
-                                  ),
+                            )
+                          : (ajuans.isEmpty)
+                              ? const Center(
+                                  child: Text('Tidak ada data'),
+                                )
+                              : const SizedBox(),
+                      if (ajuans.isNotEmpty)
+                        for (int i = 0; i < ajuans.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                      (ajuans[i]['submittedAt'] == null)
+                                          ? 'Undefined'
+                                          : DateFormat('dd/MM/yyyy').format(
+                                              DateTime.parse(
+                                                  ajuans[i]['submittedAt'])),
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          AppTypograph.label2.regular.copyWith(
+                                        color: AppColor.blackColor,
+                                      )),
                                 ),
-                              )),
-                            ],
+                                Expanded(
+                                  child: Text(
+                                      ajuans[i]['patientName'] ??
+                                          'Tidak ada data',
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          AppTypograph.label2.regular.copyWith(
+                                        color: AppColor.blackColor,
+                                      )),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      '${ajuans[i]['diagnosisAi'] ?? '0.00% Melanoma'}',
+                                      textAlign: TextAlign.center,
+                                      style: AppTypograph.label2.bold.copyWith(
+                                        color: AppColor.greenColor,
+                                      )),
+                                ),
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, DetailPengajuanScreen.route);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                        color: AppColor.primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.assignment,
+                                            color: AppColor.whiteColor),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text('Verifikasi',
+                                              style: AppTypograph.label3.medium
+                                                  .copyWith(
+                                                color: AppColor.whiteColor,
+                                              )),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )),
+                              ],
+                            ),
                           ),
-                        ),
                     ],
                   )),
                   const SizedBox(

@@ -25,6 +25,7 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
   String error = "";
   bool _showSpinner = false;
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _keluhanController = TextEditingController();
 
   @override
   void initState() {
@@ -47,6 +48,27 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
       setState(() {
         ajuans = parsedData;
       });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+  }
+
+  Future<void> deleteAjuan(String id) async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      await deleteDataToken('/v1/patient/submission/$id', token!);
+      await getAjuan();
     } catch (e) {
       print(e);
       setState(() {
@@ -205,7 +227,17 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                                 padding: 12,
                                                 colorButton:
                                                     AppColor.redButtonColor,
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  hapusDialog(
+                                                    context,
+                                                    () async {
+                                                      Navigator.pop(context);
+                                                      await deleteAjuan(
+                                                          ajuans[index]['id']
+                                                              .toString());
+                                                    },
+                                                  );
+                                                },
                                                 child: const Icon(
                                                   Icons.delete,
                                                   color: AppColor.whiteColor,
@@ -219,9 +251,11 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                                     AppColor.yellowColor,
                                                 onPressed: () {
                                                   updateDialog(
-                                                    context,
-                                                    () {},
-                                                  );
+                                                      context,
+                                                      () {},
+                                                      _keluhanController,
+                                                      ajuans[index]
+                                                          ['complaint']);
                                                 },
                                                 child: const Icon(
                                                   Icons.edit_document,

@@ -1,9 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/app_textfield.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
-import 'package:myskin_mobile/core/components/search_textfield.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -11,7 +11,11 @@ import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/ico
 
 class DetailPengajuanScreen extends StatefulWidget {
   static const route = '/detailPengajuan';
-  const DetailPengajuanScreen({super.key});
+  final String id;
+  const DetailPengajuanScreen({
+    super.key,
+    required this.id,
+  });
 
   @override
   State<DetailPengajuanScreen> createState() => _DetailPengajuanScreenState();
@@ -21,6 +25,11 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
   bool? _selectedRadioButton;
   final TextEditingController _catatanController = TextEditingController();
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -29,7 +38,6 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
             title: 'Detail Pengajuan',
             isBack: true,
           ),
-          
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: context.as.padding),
@@ -39,8 +47,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                         vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
@@ -52,7 +59,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                       ),
                     ),
                     Text(
-                      'ID Deteksi: 16',
+                      'ID Deteksi: ${widget.id}',
                       style: AppTypograph.label1.bold,
                     ),
                     const SizedBox(height: 8),
@@ -78,7 +85,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                               color: AppColor.blackColor,
                             )),
                         const SizedBox(height: 12),
-                        Text('Nama: Zaky Pasien',
+                        Text('Nama: ',
                             style: AppTypograph.label1.regular.copyWith(
                               color: AppColor.blackColor,
                             )),

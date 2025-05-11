@@ -8,8 +8,8 @@ class SearchTextField extends StatelessWidget {
   final TextEditingController controller;
   final String? hintText;
   final bool isPadding;
-  final String? Function(String?)? validator;
-  final String? Function(String?)? onChanged;
+  final void Function(String?)? validator;
+  final void Function(String?)? onChanged;
 
   const SearchTextField({
     super.key,

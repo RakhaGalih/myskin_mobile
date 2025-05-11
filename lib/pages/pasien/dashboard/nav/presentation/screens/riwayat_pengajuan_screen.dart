@@ -8,6 +8,7 @@ import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/core/utils/dialog_util.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_riwayat_pengajuan_patient_screen.dart';
 
@@ -46,6 +47,27 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
       setState(() {
         ajuans = parsedData;
       });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+  }
+
+  Future<void> deleteAjuan(String id) async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      await deleteDataToken('/v1/patient/submission/$id', token!);
+      await getAjuan();
     } catch (e) {
       print(e);
       setState(() {
@@ -232,7 +254,8 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
                                                     MaterialPageRoute(
                                                         builder: (context) {
                                                       return DetailRiwayatPengajuanPatientScreen(
-                                                        id: ajuans[index]['id'].toString(),
+                                                        id: ajuans[index]['id']
+                                                            .toString(),
                                                       );
                                                     }),
                                                   );
@@ -248,7 +271,17 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
                                                 padding: 12,
                                                 colorButton:
                                                     AppColor.redButtonColor,
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  hapusDialog(
+                                                    context,
+                                                    () async {
+                                                      Navigator.pop(context);
+                                                      await deleteAjuan(
+                                                          ajuans[index]['id']
+                                                              .toString());
+                                                    },
+                                                  );
+                                                },
                                                 child: const Icon(
                                                   Icons.delete,
                                                   color: AppColor.whiteColor,
