@@ -10,7 +10,9 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/core/utils/dialog_util.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/ajukan_verifikasi_page.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_deteksi_patient_screen.dart';
+import 'package:myskin_mobile/pages/pasien/dashboard/navbar_patient_screen.dart';
 
 class RiwayatDeteksiScreen extends StatefulWidget {
   static const route = '/riwayatDeteksiPasien';
@@ -58,6 +60,40 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
         _showSpinner = false;
       });
     }
+  }
+
+  Future<void> _editAjuan(int index) async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    dynamic response = {};
+    try {
+      Map<String, dynamic> data = {
+        'complaint': _keluhanController.text,
+      };
+      await updateDataToken(
+          '/v1/patient/submission/${ajuans[index]['id']}', data);
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, NavbarPatientScreen.route);
+        const snackBar = SnackBar(
+          content: Text('Data berhasil ditambahkan!'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+      print(response['message']);
+    } catch (e) {
+      setState(() {
+        _showSpinner = false;
+        error = "${response['message']}";
+      });
+      print('Login error: $e');
+      print(response);
+    }
+    setState(() {
+      _showSpinner = false;
+    });
   }
 
   Future<void> deleteAjuan(String id) async {
@@ -173,11 +209,19 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                     const SizedBox(height: 12),
                                     VerifikasiItem(
                                       title: 'Pengajuan',
-                                      value: Text('Belum',
+                                      value: Text(
+                                          ajuans[index]['isSubmitted'] ==
+                                                  'Sudah'
+                                              ? 'Sudah'
+                                              : 'Belum',
                                           textAlign: TextAlign.center,
                                           style:
                                               AppTypograph.label2.bold.copyWith(
-                                            color: AppColor.redTextColor,
+                                            color: ajuans[index]
+                                                        ['isSubmitted'] ==
+                                                    'Sudah'
+                                                ? AppColor.greenColor
+                                                : AppColor.redTextColor,
                                           )),
                                     ),
                                     const SizedBox(height: 12),
@@ -191,8 +235,11 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                               AppTypograph.label2.bold.copyWith(
                                             color: (ajuans[index]['status'] ==
                                                     'rejected')
-                                                ? AppColor.redTextColor
-                                                : AppColor.greenColor,
+                                                ? AppColor.maroonColor
+                                                : (ajuans[index]['status'] ==
+                                                        'pending')
+                                                    ? AppColor.yellowTextColor
+                                                    : AppColor.greenColor,
                                           )),
                                     ),
                                     const SizedBox(
@@ -250,9 +297,14 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                                 colorButton:
                                                     AppColor.yellowColor,
                                                 onPressed: () {
-                                                  updateDialog(
-                                                      context,
-                                                      () {},
+                                                  updateDialog(context,
+                                                      () async {
+                                                    if (_keluhanController
+                                                        .text.isNotEmpty) {
+                                                      Navigator.pop(context);
+                                                      await _editAjuan(index);
+                                                    }
+                                                  },
                                                       _keluhanController,
                                                       ajuans[index]
                                                           ['complaint']);
@@ -264,7 +316,29 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                           ),
                                         ],
                                       ),
-                                    )
+                                    ),
+                                    const SizedBox(height: 8),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: AppButton(
+                                          isOutline: true,
+                                          child: Text(
+                                            'Ajukan, Verifikasi',
+                                            style: AppTypograph.label2.bold
+                                                .copyWith(
+                                                    color:
+                                                        AppColor.primaryColor),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AjukanVerifikasiScreen(
+                                                            ajuans: ajuans[
+                                                                index])));
+                                          }),
+                                    ),
                                   ],
                                 ));
                               }),

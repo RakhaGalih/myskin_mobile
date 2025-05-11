@@ -180,8 +180,11 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
                                               AppTypograph.label2.bold.copyWith(
                                             color: (ajuans[index]['status'] ==
                                                     'rejected')
-                                                ? AppColor.redTextColor
-                                                : AppColor.greenColor,
+                                                ? AppColor.maroonColor
+                                                : (ajuans[index]['status'] ==
+                                                        'pending')
+                                                    ? AppColor.yellowTextColor
+                                                    : AppColor.greenColor,
                                           )),
                                     ),
                                     const SizedBox(

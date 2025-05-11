@@ -160,10 +160,12 @@ void updateDialog(
                             const SizedBox(
                               width: 5,
                             ),
-                            Text(
-                              'Perbarui',
-                              style: AppTypograph.label1.bold.copyWith(
-                                color: AppColor.whiteColor,
+                            Expanded(
+                              child: Text(
+                                'Perbarui',
+                                style: AppTypograph.label1.bold.copyWith(
+                                  color: AppColor.whiteColor,
+                                ),
                               ),
                             ),
                           ],
@@ -293,10 +295,12 @@ void hapusDialog(BuildContext context, VoidCallback onConfirm) {
                             const SizedBox(
                               width: 5,
                             ),
-                            Text(
-                              'Hapus',
-                              style: AppTypograph.label1.bold.copyWith(
-                                color: AppColor.whiteColor,
+                            Expanded(
+                              child: Text(
+                                'Hapus',
+                                style: AppTypograph.label1.bold.copyWith(
+                                  color: AppColor.whiteColor,
+                                ),
                               ),
                             ),
                           ],

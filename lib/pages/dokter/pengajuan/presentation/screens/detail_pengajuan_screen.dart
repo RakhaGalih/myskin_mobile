@@ -69,6 +69,8 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
     }
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -285,9 +287,29 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                             isReadOnly: ajuans['doctorNote'] != null,
                             controller: _catatanController,
                             minLines: 5,
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                                child: Text('Ajukan Verifikasi',
+                                    style: AppTypograph.label2.bold
+                                        .copyWith(color: AppColor.whiteColor)),
+                                onPressed: () {
+                                  if (ajuans['diagnosis'] == null) {
+                                    if (_catatanController.text.isEmpty) {
+
+                                    } else {}
+                                  }
+                                }),
                           )
                         ],
-                      ))
+                      )),
+                      SizedBox(
+                        height: context.as.padding,
+                      ),
                     ],
                   ),
                 ),
