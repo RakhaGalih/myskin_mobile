@@ -10,6 +10,7 @@ import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/core/utils/format_util.dart';
+import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/icon_item.dart';
 
 class DetailPengajuanScreen extends StatefulWidget {
@@ -34,10 +35,10 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
   @override
   void initState() {
     super.initState();
-    getAjuan();
+    _getAjuan();
   }
 
-  Future<void> getAjuan() async {
+  Future<void> _getAjuan() async {
     error = "";
     setState(() {
       _showSpinner = true;
@@ -69,7 +70,43 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
     }
   }
 
-  
+  Future<void> _ajukanVerifikasi() async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    dynamic response = {};
+    try {
+      Map<String, dynamic> data = {
+        'diagnosis': (_selectedRadioButton == true)
+            ? 'Melanoma'
+            : (_selectedRadioButton == false)
+                ? 'Bukan Melanoma'
+                : null,
+        'doctorNote': _catatanController.text,
+      };
+      await updateDataToken('/v1/doctor/submissions/${ajuans['id']}', data);
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, NavbarDoctorScreen.route);
+        const snackBar = SnackBar(
+          content: Text('Data berhasil ditambahkan!'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+      print(response['message']);
+    } catch (e) {
+      setState(() {
+        _showSpinner = false;
+        error = "${response['message']}";
+      });
+      print('Login error: $e');
+      print(response);
+    }
+    setState(() {
+      _showSpinner = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +287,9 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                                   fillColor: const WidgetStatePropertyAll(
                                       AppColor.primaryColor),
                                   onChanged: (value) {
-                                    if (ajuans['diagnosis'] == null) {
+                                    if (ajuans['diagnosis'] == null ||
+                                        ajuans['diagnosis'] ==
+                                            'Belum dapat dipastikan') {
                                       setState(() {
                                         _selectedRadioButton = value!;
                                       });
@@ -271,7 +310,9 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                                   value: false,
                                   groupValue: _selectedRadioButton,
                                   onChanged: (value) {
-                                    if (ajuans['diagnosis'] == null) {
+                                    if (ajuans['diagnosis'] == null ||
+                                        ajuans['diagnosis'] ==
+                                            'Belum dapat dipastikan') {
                                       setState(() {
                                         _selectedRadioButton = value!;
                                       });
@@ -285,26 +326,36 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                           AppTextField(
                             title: 'Catatan:',
                             isReadOnly: ajuans['doctorNote'] != null,
+                            onChanged: (value) {
+                              setState(() {});
+                              return null;
+                            },
                             controller: _catatanController,
                             minLines: 5,
                           ),
                           const SizedBox(
                             height: 16,
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: AppButton(
-                                child: Text('Ajukan Verifikasi',
-                                    style: AppTypograph.label2.bold
-                                        .copyWith(color: AppColor.whiteColor)),
-                                onPressed: () {
-                                  if (ajuans['diagnosis'] == null) {
-                                    if (_catatanController.text.isEmpty) {
-
-                                    } else {}
-                                  }
-                                }),
-                          )
+                          if (ajuans['doctorNote'] == null)
+                            SizedBox(
+                              width: double.infinity,
+                              child: AppButton(
+                                  colorButton: (_catatanController.text.isEmpty)
+                                      ? AppColor.greyTextColor
+                                      : AppColor.primaryColor,
+                                  child: Text('Ajukan Verifikasi',
+                                      style: AppTypograph.label2.bold.copyWith(
+                                          color: AppColor.whiteColor)),
+                                  onPressed: () async {
+                                    if (ajuans['diagnosis'] == null ||
+                                        ajuans['diagnosis'] ==
+                                            'Belum dapat dipastikan') {
+                                      if (_catatanController.text.isNotEmpty) {
+                                        await _ajukanVerifikasi();
+                                      }
+                                    }
+                                  }),
+                            )
                         ],
                       )),
                       SizedBox(
