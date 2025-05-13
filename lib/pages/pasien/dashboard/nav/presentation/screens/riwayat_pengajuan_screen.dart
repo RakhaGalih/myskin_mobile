@@ -9,6 +9,7 @@ import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/core/utils/dialog_util.dart';
+import 'package:myskin_mobile/core/utils/format_util.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_riwayat_pengajuan_patient_screen.dart';
 
@@ -135,8 +136,10 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
                                           textAlign: TextAlign.center,
                                           style: AppTypograph.label2.bold
                                               .copyWith(
-                                                  color:
-                                                      AppColor.redTextColor)),
+                                                  color: getMelanomaColor(
+                                                      ajuans[index]
+                                                              ['diagnosisAi'] ??
+                                                          '0% Melanoma'))),
                                     ),
                                     const SizedBox(height: 12),
                                     VerifikasiItem(
@@ -221,7 +224,8 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
                                     const SizedBox(height: 12),
                                     VerifikasiItem(
                                       title: 'Melanoma',
-                                      value: Text('Melanoma',
+                                      value: Text(
+                                          '${ajuans[index]['diagnosis'] ?? 'Tidak ada data'}',
                                           textAlign: TextAlign.center,
                                           style: AppTypograph.label2.regular
                                               .copyWith(

@@ -379,7 +379,8 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                                       '${ajuans[i]['diagnosisAi'] ?? '0.00% Melanoma'}',
                                       textAlign: TextAlign.center,
                                       style: AppTypograph.label2.bold.copyWith(
-                                        color: AppColor.greenColor,
+                                        color: getMelanomaColor(
+                                            ajuans[i]['diagnosisAi']??'0%'),
                                       )),
                                 ),
                                 Expanded(

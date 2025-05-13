@@ -114,7 +114,10 @@ class _DaftarPengajuanScreenState extends State<DaftarPengajuanScreen> {
                                       ajuans[index]['diagnosisAi'].toString() ??
                                           'Tidak ada data',
                                       style: AppTypograph.label2.bold.copyWith(
-                                          color: AppColor.redTextColor)),
+                                          color:
+                                              ajuans[index]['diagnosisAi'] >= 50
+                                                  ? AppColor.redTextColor
+                                                  : AppColor.greenColor)),
                                 ]),
                                 const SizedBox(height: 8),
                                 AppButton(
@@ -125,8 +128,8 @@ class _DaftarPengajuanScreenState extends State<DaftarPengajuanScreen> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   DetailPengajuanScreen(
-                                                      id: ajuans[index]
-                                                          ['id'].toString())));
+                                                      id: ajuans[index]['id']
+                                                          .toString())));
                                     },
                                     child: SizedBox(
                                       width: double.infinity,

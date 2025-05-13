@@ -204,23 +204,28 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                           ])),
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: CardContainer(
                                 child: IconItem(
                                     title: 'Melanoma',
                                     image: 'assets/icons/melanoma_icon.png',
-                                    value: 'iya',
+                                    value: isMelanoma(ajuans['diagnosisAi']??
+                                            '0% Melanoma')
+                                        ? 'Iya'
+                                        : 'Tidak',
                                     color: AppColor.blackColor)),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: CardContainer(
-                                child: IconItem(
-                                    title: 'Keakuratan',
-                                    image: 'assets/icons/spedometer_icon.png',
-                                    value: ajuans['diagnosisAi'] ??
-                                        'Tidak Diketahui',
-                                    color: AppColor.maroonColor)),
+                              child: IconItem(
+                                  title: 'Keakuratan',
+                                  image: 'assets/icons/spedometer_icon.png',
+                                  value: ajuans['diagnosisAi'] ??
+                                      'Tidak Diketahui',
+                                  color: getMelanomaColor(
+                                      ajuans['diagnosisAi'] ?? '0%')),
+                            ),
                           ),
                         ],
                       ),

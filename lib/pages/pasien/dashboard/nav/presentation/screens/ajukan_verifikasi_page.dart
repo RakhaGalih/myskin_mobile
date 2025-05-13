@@ -12,6 +12,7 @@ import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/core/utils/format_util.dart';
 import 'package:myskin_mobile/pages/dokter/pengajuan/presentation/components/icon_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/navbar_patient_screen.dart';
 
@@ -185,12 +186,16 @@ class _AjukanVerifikasiScreenState extends State<AjukanVerifikasiScreen> {
                         )),
                     Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: CardContainer(
                               child: IconItem(
                                   title: 'Melanoma',
                                   image: 'assets/icons/melanoma_icon.png',
-                                  value: 'iya',
+                                  value: isMelanoma(
+                                          widget.ajuans['diagnosisAi'] ??
+                                              '0% Melanoma')
+                                      ? 'Iya'
+                                      : 'Tidak',
                                   color: AppColor.blackColor)),
                         ),
                         const SizedBox(width: 16),

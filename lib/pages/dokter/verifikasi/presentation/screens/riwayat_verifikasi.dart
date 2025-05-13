@@ -112,7 +112,9 @@ class _RiwayatVerifikasiScreenState extends State<RiwayatVerifikasiScreen> {
                                       ajuans[index]['diagnosisAi'] ??
                                           'Tidak ada data',
                                       style: AppTypograph.label2.bold.copyWith(
-                                        color: AppColor.greenColor,
+                                        color: getMelanomaColor(
+                                            ajuans[index]['diagnosisAi'] ??
+                                                '0%'),
                                       )),
                                 ),
                                 const SizedBox(height: 12),

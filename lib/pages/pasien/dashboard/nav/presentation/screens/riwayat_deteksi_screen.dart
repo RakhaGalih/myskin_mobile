@@ -9,6 +9,7 @@ import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/core/utils/dialog_util.dart';
+import 'package:myskin_mobile/core/utils/format_util.dart';
 import 'package:myskin_mobile/pages/dokter/verifikasi/presentation/components/verifikasi_item.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/ajukan_verifikasi_page.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/detail_deteksi_patient_screen.dart';
@@ -172,8 +173,10 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                           textAlign: TextAlign.center,
                                           style: AppTypograph.label2.bold
                                               .copyWith(
-                                                  color:
-                                                      AppColor.redTextColor)),
+                                                  color: getMelanomaColor(
+                                                      ajuans[index]
+                                                              ['diagnosisAi'] ??
+                                                          '0% Melanoma'))),
                                     ),
                                     const SizedBox(height: 12),
                                     VerifikasiItem(
