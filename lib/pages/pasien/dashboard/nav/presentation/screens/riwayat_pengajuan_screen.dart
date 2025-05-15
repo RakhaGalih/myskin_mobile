@@ -81,6 +81,34 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
     }
   }
 
+  Future<void> _getListAjuansOnSearch(String keyword) async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      var response =
+          await getDataToken('/v1/patient/submissions?search=$keyword', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        ajuans = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +118,16 @@ class _RiwayatPengajuanScreenState extends State<RiwayatPengajuanScreen> {
             title: 'Riwayat Pengajuan',
             isBack: true,
           ),
-          SearchTextField(controller: _searchController),
+          SearchTextField(
+            controller: _searchController,
+            onChanged: (value) async{
+              if (_searchController.text.isNotEmpty) {
+                await _getListAjuansOnSearch(_searchController.text);
+              } else {
+                await getAjuan();
+              }
+            },
+          ),
           (_showSpinner)
               ? const Center(
                   child:

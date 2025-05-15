@@ -411,6 +411,8 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                                                 setState(() {
                                                   selectedDoctorIndex = index;
                                                 });
+                                                 print(listDokter[selectedDoctorIndex]['name']);
+                                                print(listDokter[selectedDoctorIndex]['id']);
                                               })
                                         ],
                                       ),
@@ -424,6 +426,7 @@ class _DeteksiKulitScreenState extends State<DeteksiKulitScreen> {
                                 : AppColor.primaryColor,
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
+                                print(listDokter[selectedDoctorIndex]['id']);
                                 await _ajukanVerifikasi(
                                     listDokter[selectedDoctorIndex]['id']);
                               } else {

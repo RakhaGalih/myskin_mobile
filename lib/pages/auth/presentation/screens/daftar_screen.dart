@@ -9,7 +9,6 @@ import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 import 'package:myskin_mobile/pages/auth/presentation/components/app_datetime_picker.dart';
 import 'package:myskin_mobile/pages/auth/presentation/screens/daftar_dokter_screen.dart';
-import 'package:myskin_mobile/pages/dokter/navbar_doctor_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/navbar_patient_screen.dart';
 
 class DaftarScreen extends StatefulWidget {
@@ -49,19 +48,14 @@ class _DaftarScreenState extends State<DaftarScreen> {
         'phone': _noTeleponController.text,
         'dob': formattedDate,
         'password': _passwordController.text,
-        'role': 'patient',
         'password_confirmation': _konfirmasiPasswordController.text,
       };
-      response = await postData("/v1/auth/register", data);
+      response = await postData("/v1/auth/register/patient", data);
       Map<String, dynamic> userData = response['data'];
       String token = response['token']; // Ambil token dari response
       await saveToken(token, userData['role']);
       if (mounted) {
-        if (userData['role'] == 'patient') {
-          Navigator.pushReplacementNamed(context, NavbarPatientScreen.route);
-        } else if (userData['role'] == 'doctor') {
-          Navigator.pushReplacementNamed(context, NavbarDoctorScreen.route);
-        }
+        Navigator.pushReplacementNamed(context, NavbarPatientScreen.route);
       }
       print('berhasil login!');
       String? accessToken = await getToken();
@@ -208,10 +202,12 @@ class _DaftarScreenState extends State<DaftarScreen> {
                             });
                           },
                         ),
-                        Text(
-                          'Saya setuju dengan persyaratan penggunaan',
-                          style: AppTypograph.label2.regular
-                              .copyWith(color: AppColor.blackColor),
+                        Expanded(
+                          child: Text(
+                            'Saya setuju dengan persyaratan penggunaan',
+                            style: AppTypograph.label2.regular
+                                .copyWith(color: AppColor.blackColor),
+                          ),
                         ),
                       ],
                     ),
@@ -262,31 +258,6 @@ class _DaftarScreenState extends State<DaftarScreen> {
                             ),
                           ),
                         )),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            style: AppTypograph.label2.regular
-                                .copyWith(color: AppColor.blackColor),
-                            children: [
-                              const TextSpan(
-                                  text:
-                                      'Email harus mengandung salah satu dari domain berikut:'),
-                              TextSpan(
-                                  text: '@pasien.myskin.ac.id ',
-                                  style: AppTypograph.label2.regular
-                                      .copyWith(color: AppColor.blueColor)),
-                              const TextSpan(
-                                  text: 'untuk Login sebagai pasien, atau '),
-                              TextSpan(
-                                  text: '@dokter.myskin.ac.id ',
-                                  style: AppTypograph.label2.regular
-                                      .copyWith(color: AppColor.blueColor)),
-                              const TextSpan(
-                                  text: 'untuk Login sebagai dokter.')
-                            ])),
                     const SizedBox(
                       height: 12,
                     ),

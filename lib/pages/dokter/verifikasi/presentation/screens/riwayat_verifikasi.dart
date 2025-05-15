@@ -59,13 +59,51 @@ class _RiwayatVerifikasiScreenState extends State<RiwayatVerifikasiScreen> {
     }
   }
 
+  Future<void> _getListAjuansOnSearch(String keyword) async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      var response = await getDataToken(
+          '/v1/doctor/submissions/history?search=$keyword', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        ajuans = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           const DevAppbar(title: 'Riwayat Verifikasi'),
-          SearchTextField(controller: _searchController),
+          SearchTextField(
+            controller: _searchController,
+            hintText: 'Cari nama pasien',
+            onChanged: (value) async {
+              if (_searchController.text.isNotEmpty) {
+                await _getListAjuansOnSearch(_searchController.text);
+              } else {
+                await getAjuan();
+              }
+            },
+          ),
           (_showSpinner)
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -112,9 +150,9 @@ class _RiwayatVerifikasiScreenState extends State<RiwayatVerifikasiScreen> {
                                       ajuans[index]['diagnosisAi'] ??
                                           'Tidak ada data',
                                       style: AppTypograph.label2.bold.copyWith(
-                                        color: getMelanomaColor(
-                                            ajuans[index]['diagnosisAi'] ??
-                                                '0%'),
+                                        color: getMelanomaColor(ajuans[index]
+                                                ['diagnosisAi'] ??
+                                            '0%'),
                                       )),
                                 ),
                                 const SizedBox(height: 12),

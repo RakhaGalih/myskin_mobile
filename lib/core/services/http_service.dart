@@ -144,6 +144,58 @@ Future<dynamic> postDataTokenWithImage(
   return _handleResponse(response);
 }
 
+// POST request dengan token dan gambar
+Future<dynamic> postDataTokenDoctorRegister(
+    String endpoint,
+    Map<String, String> data,
+    File? selectedFileTandaRegistrasi,
+    File? selectedFileIjazah,
+    File? selectedFileSertifikat) async {
+  String? token = await getToken();
+  if (token == null) {
+    throw Exception('Token not found');
+  }
+
+  Map<String, String> headers = {
+    'Authorization': 'Bearer $token',
+    'Content-Type': 'application/json',
+  };
+
+  var request = http.MultipartRequest('POST', Uri.parse('$apiURL$endpoint'));
+  request.headers['Authorization'] = 'Bearer $token';
+
+  request.fields.addAll(data);
+  request.headers.addAll(headers);
+  http.MultipartFile multipartFileTandaRegistrasi =
+      await getMultiPartFile('license_file', selectedFileTandaRegistrasi);
+  http.MultipartFile multipartFileIjazah =
+      await getMultiPartFile('diploma_file', selectedFileIjazah);
+  http.MultipartFile multipartFileSertifikat =
+      await getMultiPartFile('certification_file', selectedFileSertifikat);
+  request.files.add(multipartFileTandaRegistrasi);
+  request.files.add(multipartFileIjazah);
+  request.files.add(multipartFileSertifikat);
+  var streamedResponse = await request.send();
+  var response = await http.Response.fromStream(streamedResponse);
+
+  // Tambahkan field data ke request
+  data.forEach((key, value) {
+    request.fields[key] = value.toString();
+  });
+
+  return _handleResponse(response);
+}
+
+Future<http.MultipartFile> getMultiPartFile(
+    String key, File? selectedFile) async {
+  var mimeType = lookupMimeType(selectedFile!.path);
+  var bytes = await File.fromUri(Uri.parse(selectedFile.path)).readAsBytes();
+  http.MultipartFile multipartFile = http.MultipartFile.fromBytes(key, bytes,
+      filename: basename(selectedFile.path),
+      contentType: MediaType.parse(mimeType.toString()));
+  return multipartFile;
+}
+
 // Fungsi untuk menangani response
 dynamic _handleResponse(http.Response response) {
   if (response.statusCode == 200 || response.statusCode == 201) {
@@ -171,7 +223,8 @@ Future<dynamic> postDataToken(String address, Map<String, dynamic> body) async {
   _handleResponse(response);
 }
 
-Future<dynamic> updateDataToken(String address, Map<String, dynamic> body) async {
+Future<dynamic> updateDataToken(
+    String address, Map<String, dynamic> body) async {
   final uri = Uri.parse(apiURL + address);
   String? token = await getToken();
   final response = await http.patch(

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/components/app_button.dart';
 import 'package:myskin_mobile/core/components/app_textfield.dart';
+import 'package:myskin_mobile/core/services/http_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -26,6 +29,65 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
       TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
   bool rememberMe = false;
+  String? kategori;
+  File? _selectedFileTandaRegistrasi;
+  File? _selectedFileIjazah;
+  File? _selectedFileSertifikat;
+
+  bool _showSpinner = false;
+  String? error;
+
+  Future<void> _registerDokter() async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    Map<String, dynamic> response = {};
+    try {
+      Map<String, String> data = {
+        'name': _namaController.text,
+        'email': _emailController.text,
+        'phone': _noTeleponController.text,
+        'password': _passwordController.text,
+        'password_confirmation': _konfirmasiPasswordController.text,
+        'practice_address': _alamatController.text,
+        'specialization': kategori!,
+        'license_number': _emailController.text,
+        'current_institution': _passwordController.text,
+        'work_history': _konfirmasiPasswordController.text,
+        'publication': _namaController.text,
+      };
+      response = await postDataTokenDoctorRegister(
+          '/v1/auth/register/doctor',
+          data,
+          _selectedFileTandaRegistrasi,
+          _selectedFileIjazah,
+          _selectedFileSertifikat);
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, NavbarDoctorScreen.route);
+      }
+      print('berhasil login!');
+      String? accessToken = await getToken();
+      print(accessToken);
+    } catch (e) {
+      setState(() {
+        _showSpinner = false;
+        error = "${response['message']}";
+      });
+
+      if (error == "null") {
+        setState(() {
+          error = "Network Error. Please change your connection";
+        });
+      }
+      print('Register error: $e');
+      print(response);
+    }
+    setState(() {
+      _showSpinner = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,15 +206,22 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                                   '(Sp.OT) Spesialis Bedah Ortopedi'
                                 ],
                                 title: 'Spesialisasi',
-                                onItemSelected: (value) {}),
+                                onItemSelected: (selectedItem) {
+                                  // Handle the selected item here
+                                  setState(() {
+                                    kategori = selectedItem!;
+                                  });
+                                  print('Selected item: $selectedItem');
+                                }),
                           ),
                           const SizedBox(
                             width: 12,
                           ),
                           Expanded(
                             child: AppTextField(
-                                title: 'Nomor Registrasi Dokter',
-                                controller: _emailController),
+                              title: 'Nomor Registrasi Dokter',
+                              controller: _emailController,
+                            ),
                           ),
                         ],
                       ),
@@ -160,8 +229,14 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                         height: 20,
                       ),
                       AppFilePicker(
-                          onDateTimeSelected: (value) {},
-                          title: 'Surat Tanda Registrasi'),
+                        onFileSelected: (value) {
+                          setState(() {
+                            _selectedFileTandaRegistrasi = value;
+                          });
+                        },
+                        title: 'Surat Tanda Registrasi',
+                        selectedFile: _selectedFileTandaRegistrasi,
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -169,16 +244,27 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                         children: [
                           Expanded(
                             child: AppFilePicker(
-                                onDateTimeSelected: (value) {},
-                                title: 'Ijazah Kedokteran'),
+                                onFileSelected: (value) {
+                                  setState(() {
+                                    _selectedFileIjazah = value;
+                                  });
+                                },
+                                title: 'Ijazah Kedokteran',
+                                selectedFile: _selectedFileIjazah),
                           ),
                           const SizedBox(
                             width: 12,
                           ),
                           Expanded(
                             child: AppFilePicker(
-                                onDateTimeSelected: (value) {},
-                                title: 'Sertifikat Keahlian (opsional)'),
+                              onFileSelected: (value) {
+                                setState(() {
+                                  _selectedFileSertifikat = value;
+                                });
+                              },
+                              title: 'Sertifikat Keahlian (opsional)',
+                              selectedFile: _selectedFileSertifikat,
+                            ),
                           ),
                         ],
                       ),
@@ -211,48 +297,84 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                           title: 'Publikasi Ilmiah (opsional)',
                           hintext: 'Masukkan Publikasi Ilmiah',
                           controller: _namaController),
-                      Row(
-                        children: [
-                          Checkbox(
-                            checkColor: AppColor.whiteColor,
-                            activeColor: AppColor.primaryColor,
-                            value: rememberMe,
-                            onChanged: (value) {
-                              setState(() {
-                                rememberMe = value!;
-                              });
-                            },
-                          ),
-                          Text(
-                            'Saya setuju dengan persyaratan penggunaan',
-                            style: AppTypograph.label2.regular
-                                .copyWith(color: AppColor.blackColor),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              checkColor: AppColor.whiteColor,
+                              activeColor: AppColor.primaryColor,
+                              value: rememberMe,
+                              onChanged: (value) {
+                                setState(() {
+                                  rememberMe = value!;
+                                });
+                              },
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Saya setuju dengan persyaratan penggunaan',
+                                style: AppTypograph.label2.regular
+                                    .copyWith(color: AppColor.blackColor),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                AppButton(
-                    onPressed: () {
-                      if (_selectedForm == 0) {
-                        setState(() {
-                          _selectedForm = 1;
-                        });
-                      } else {
-                        Navigator.of(context)
-                            .pushReplacementNamed(NavbarDoctorScreen.route);
-                      }
-                    },
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          (_selectedForm == 0) ? 'Next' : 'Daftar',
-                          style: AppTypograph.label1.bold
-                              .copyWith(color: AppColor.whiteColor),
+                Row(
+                  children: [
+                    if (_selectedForm == 1)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: AppButton(
+                              isOutline: true,
+                              onPressed: () {
+                                if (_selectedForm == 1) {
+                                  setState(() {
+                                    _selectedForm = 0;
+                                  });
+                                }
+                              },
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'Sebelumnya',
+                                    style: AppTypograph.label1.bold
+                                        .copyWith(color: AppColor.primaryColor),
+                                  ),
+                                ),
+                              )),
                         ),
                       ),
-                    )),
+                    Expanded(
+                      child: AppButton(
+                          onPressed: () {
+                            if (_selectedForm == 0) {
+                              setState(() {
+                                _selectedForm = 1;
+                              });
+                            } else {
+                              Navigator.of(context).pushReplacementNamed(
+                                  NavbarDoctorScreen.route);
+                            }
+                          },
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                (_selectedForm == 0) ? 'Next' : 'Daftar',
+                                style: AppTypograph.label1.bold
+                                    .copyWith(color: AppColor.whiteColor),
+                              ),
+                            ),
+                          )),
+                    ),
+                  ],
+                ),
                 const SizedBox(
                   height: 12,
                 ),
@@ -296,30 +418,6 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 12,
-                ),
-                RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                        style: AppTypograph.label2.regular
-                            .copyWith(color: AppColor.blackColor),
-                        children: [
-                          const TextSpan(
-                              text:
-                                  'Email harus mengandung salah satu dari domain berikut:'),
-                          TextSpan(
-                              text: '@pasien.myskin.ac.id ',
-                              style: AppTypograph.label2.regular
-                                  .copyWith(color: AppColor.blueColor)),
-                          const TextSpan(
-                              text: 'untuk Login sebagai pasien, atau '),
-                          TextSpan(
-                              text: '@dokter.myskin.ac.id ',
-                              style: AppTypograph.label2.regular
-                                  .copyWith(color: AppColor.blueColor)),
-                          const TextSpan(text: 'untuk Login sebagai dokter.')
-                        ])),
                 const SizedBox(
                   height: 12,
                 ),

@@ -1,18 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
 
 class AppFilePicker extends StatefulWidget {
-  final ValueChanged<DateTime?>
-      onDateTimeSelected; // Callback for combined DateTime
+  final ValueChanged<File?>
+      onFileSelected; // Callback for combined DateTime
   final String title;
+  final File? selectedFile;
 
   const AppFilePicker({
     super.key,
-    required this.onDateTimeSelected,
+    required this.onFileSelected,
     required this.title,
+    this.selectedFile,
   });
 
   @override
@@ -38,6 +42,17 @@ class _AppFilePickerState extends State<AppFilePicker> {
         _filePath = null;
       });
     }
+    widget.onFileSelected(
+        _filePath != null ? File(_filePath!) : null); // Call the callback
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.selectedFile != null) {
+      _filePath = widget.selectedFile!.path;
+    }
   }
 
   @override
@@ -60,20 +75,19 @@ class _AppFilePickerState extends State<AppFilePicker> {
               filled: true,
               fillColor: AppColor.whiteColor,
               alignLabelWithHint: true,
-              labelStyle: AppTypograph.body1.regular
-                  .copyWith(color: AppColor.greyTextColor),
-              focusedBorder: appOutlineInputBorder(AppColor.primaryColor),
-              enabledBorder: appOutlineInputBorder(AppColor.greyTextColor),
+              hintStyle: AppTypograph.body1.regular.copyWith(
+                  color: _filePath == null
+                      ? AppColor.greyTextColor
+                      : AppColor.primaryColor),
               errorBorder: appOutlineInputBorder(AppColor.redTextColor),
-              focusedErrorBorder: appOutlineInputBorder(AppColor.redTextColor),
-              border: appOutlineInputBorder(AppColor.greyTextColor),
+              border: appOutlineInputBorder(_filePath == null
+                  ? AppColor.greyTextColor
+                  : AppColor.primaryColor),
             ),
             child: Row(children: [
               Expanded(
                 child: Text(
-                  _filePath != null
-                      ? 'Selected File: $_filePath'
-                      : 'No file chosen',
+                  _filePath != null ? 'File: $_filePath' : 'No file chosen',
                   style: AppTypograph.body1.regular
                       .copyWith(color: AppColor.greyTextColor),
                   overflow: TextOverflow.ellipsis,

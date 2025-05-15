@@ -63,6 +63,34 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
     }
   }
 
+  Future<void> _getListAjuansOnSearch(String keyword) async {
+    error = "";
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      String? token = await getToken();
+      var response =
+          await getDataToken('/v1/patient/detections?search=$keyword', token!);
+      List<Map<String, dynamic>> parsedData = (response['data'] as List)
+          .map((item) => item as Map<String, dynamic>)
+          .toList();
+      print(response);
+      setState(() {
+        ajuans = parsedData;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        error = "Error: $e";
+      });
+    } finally {
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+  }
+
   Future<void> _editAjuan(int index) async {
     error = "";
     setState(() {
@@ -127,7 +155,16 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
             title: 'Riwayat Deteksi',
             isBack: true,
           ),
-          SearchTextField(controller: _searchController),
+          SearchTextField(
+            controller: _searchController,
+            onChanged: (value) async{
+              if (_searchController.text.isNotEmpty) {
+                await _getListAjuansOnSearch(_searchController.text);
+              } else {
+                await getAjuan();
+              }
+            },
+          ),
           (_showSpinner)
               ? const Center(
                   child:
@@ -293,8 +330,8 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                                   color: AppColor.whiteColor,
                                                 )),
                                           ),
-                                          const SizedBox(width: 16),
-                                          Expanded(
+                                          //const SizedBox(width: 16),
+                                          /* Expanded(
                                             child: AppButton(
                                                 padding: 12,
                                                 colorButton:
@@ -316,7 +353,7 @@ class _RiwayatDeteksiScreenState extends State<RiwayatDeteksiScreen> {
                                                   Icons.edit_document,
                                                   color: AppColor.whiteColor,
                                                 )),
-                                          ),
+                                          ),*/
                                         ],
                                       ),
                                     ),
