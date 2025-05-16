@@ -53,7 +53,7 @@ class _DaftarScreenState extends State<DaftarScreen> {
       response = await postData("/v1/auth/register/patient", data);
       Map<String, dynamic> userData = response['data'];
       String token = response['token']; // Ambil token dari response
-      await saveToken(token, userData['role']);
+      await saveToken(token, 'patient');
       if (mounted) {
         Navigator.pushReplacementNamed(context, NavbarPatientScreen.route);
       }

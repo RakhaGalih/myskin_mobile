@@ -145,45 +145,45 @@ Future<dynamic> postDataTokenWithImage(
 }
 
 // POST request dengan token dan gambar
-Future<dynamic> postDataTokenDoctorRegister(
+Future<dynamic> postDataDoctorRegister(
     String endpoint,
     Map<String, String> data,
     File? selectedFileTandaRegistrasi,
     File? selectedFileIjazah,
     File? selectedFileSertifikat) async {
-  String? token = await getToken();
-  if (token == null) {
-    throw Exception('Token not found');
-  }
-
   Map<String, String> headers = {
-    'Authorization': 'Bearer $token',
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   };
 
   var request = http.MultipartRequest('POST', Uri.parse('$apiURL$endpoint'));
-  request.headers['Authorization'] = 'Bearer $token';
+  try {
+    request.headers.addAll(headers);
+    request.fields.addAll(data);
+    http.MultipartFile multipartFileTandaRegistrasi =
+        await getMultiPartFile('license_file', selectedFileTandaRegistrasi);
+    http.MultipartFile multipartFileIjazah =
+        await getMultiPartFile('diploma_file', selectedFileIjazah);
+    if (selectedFileSertifikat != null) {
+      http.MultipartFile multipartFileSertifikat =
+          await getMultiPartFile('certification_file', selectedFileSertifikat);
+      request.files.add(multipartFileSertifikat);
+    }
+    request.files.add(multipartFileTandaRegistrasi);
+    request.files.add(multipartFileIjazah);
 
-  request.fields.addAll(data);
-  request.headers.addAll(headers);
-  http.MultipartFile multipartFileTandaRegistrasi =
-      await getMultiPartFile('license_file', selectedFileTandaRegistrasi);
-  http.MultipartFile multipartFileIjazah =
-      await getMultiPartFile('diploma_file', selectedFileIjazah);
-  http.MultipartFile multipartFileSertifikat =
-      await getMultiPartFile('certification_file', selectedFileSertifikat);
-  request.files.add(multipartFileTandaRegistrasi);
-  request.files.add(multipartFileIjazah);
-  request.files.add(multipartFileSertifikat);
-  var streamedResponse = await request.send();
-  var response = await http.Response.fromStream(streamedResponse);
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
 
-  // Tambahkan field data ke request
-  data.forEach((key, value) {
-    request.fields[key] = value.toString();
-  });
-
-  return _handleResponse(response);
+    // Tambahkan field data ke request
+    data.forEach((key, value) {
+      request.fields[key] = value.toString();
+    });
+    return _handleResponse(response);
+  } catch (e) {
+    print('Error: $e');
+    throw Exception('Failed to upload files');
+  }
 }
 
 Future<http.MultipartFile> getMultiPartFile(
