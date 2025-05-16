@@ -72,15 +72,17 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
           _selectedFileIjazah,
           _selectedFileSertifikat);
       Map<String, dynamic> userData = response['data'];
-      String token = response['token']; // Ambil token dari response
+      String token = userData['token']; // Ambil token dari response
       await saveToken(token, 'doctor');
       if (mounted) {
         Navigator.pushReplacementNamed(context, NavbarDoctorScreen.route);
       }
     } catch (e) {
+      print(response.toString());
+      print(response['message'].toString());
       setState(() {
         _showSpinner = false;
-        error = "${response['message']}";
+        error = response['message'].toString();
       });
 
       if (error == "null") {
@@ -210,6 +212,7 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                           children: [
                             Expanded(
                               child: AppDropDown(
+                                  selectedItem: kategori,
                                   kategoriItems: const [
                                     '(Sp.PD) Spesialis Penyakit Dalam',
                                     '(Sp.B) Spesialis Bedah Umum',
@@ -407,6 +410,12 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                   ),
                   const SizedBox(
                     height: 12,
+                  ),
+                  Text(
+                    error ?? '',
+                    textAlign: TextAlign.center,
+                    style: AppTypograph.label2.regular
+                        .copyWith(color: AppColor.redTextColor),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

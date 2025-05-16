@@ -145,7 +145,7 @@ Future<dynamic> postDataTokenWithImage(
 }
 
 // POST request dengan token dan gambar
-Future<dynamic> postDataDoctorRegister(
+Future<Map<String, dynamic>> postDataDoctorRegister(
     String endpoint,
     Map<String, String> data,
     File? selectedFileTandaRegistrasi,
@@ -203,8 +203,7 @@ dynamic _handleResponse(http.Response response) {
     return jsonDecode(response.body);
   } else {
     print('Failed to post data. Status code: ${response.statusCode}');
-    print(response.body);
-    throw Exception('Failed to POST');
+    return jsonDecode(response.body);
   }
 }
 

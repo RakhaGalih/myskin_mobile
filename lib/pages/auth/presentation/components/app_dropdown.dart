@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -7,12 +8,14 @@ class AppDropDown extends StatefulWidget {
   final List<String> kategoriItems;
   final String title;
   final ValueChanged<String?> onItemSelected;
+  final String? selectedItem;
 
   const AppDropDown({
     super.key,
     required this.kategoriItems,
     required this.title,
     required this.onItemSelected,
+    this.selectedItem,
   });
 
   @override
@@ -21,6 +24,15 @@ class AppDropDown extends StatefulWidget {
 
 class _AppDropDownState extends State<AppDropDown> {
   String? selectedItem;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      selectedItem = widget.selectedItem;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +57,9 @@ class _AppDropDownState extends State<AppDropDown> {
               focusedBorder: appOutlineInputBorder(AppColor.primaryColor),
               enabledBorder: appOutlineInputBorder(AppColor.greyTextColor),
               errorBorder: appOutlineInputBorder(AppColor.redTextColor),
-              focusedErrorBorder:
-                  appOutlineInputBorder(AppColor.redTextColor),
+              focusedErrorBorder: appOutlineInputBorder(AppColor.redTextColor),
               border: appOutlineInputBorder(AppColor.greyTextColor),
-              hintText: 'Pilih ${widget.title}...'),
+              hintText: widget.selectedItem??'Pilih ${widget.title}...'),
           value: selectedItem,
           icon: const Icon(Icons.arrow_drop_down),
           isExpanded: true,
