@@ -14,16 +14,13 @@ import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/ri
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/riwayat_pengajuan_screen.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/navbar_patient_screen.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID');
   runApp(const MainApp());
 }
 
 class MainApp extends StatefulWidget {
-
-  
-
   const MainApp({super.key});
 
   @override
@@ -59,11 +56,13 @@ class _MainAppState extends State<MainApp> {
       theme: AppTheme.theme,
       home: ModalProgressHUD(
         inAsyncCall: _showSpinner,
-        child: (role == 'patient')
-            ? const NavbarPatientScreen()
-            : (role == 'doctor')
-                ? const NavbarDoctorScreen()
-                : const OnboardingScreen(),
+        child: Scaffold(
+          body: role == "patient"
+              ? const NavbarPatientScreen()
+              : role == "doctor"
+                  ? const NavbarDoctorScreen()
+                  : const OnboardingScreen(),
+        ),
       ),
       routes: {
         OnboardingScreen.route: (context) => const OnboardingScreen(),

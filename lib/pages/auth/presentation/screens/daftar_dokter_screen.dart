@@ -217,7 +217,7 @@ class _DaftarDokterScreenState extends State<DaftarDokterScreen> {
                                     '(Sp.PD) Spesialis Penyakit Dalam',
                                     '(Sp.B) Spesialis Bedah Umum',
                                     '(Sp.BS) Spesialis Bedah Saraf',
-                                    '(Sp.OT) Spesialis Bedah Ortopedi'
+                                    '(Sp.OT) Spesialis Bedah Ortopedi',
                                   ],
                                   title: 'Spesialisasi',
                                   onItemSelected: (selectedItem) {

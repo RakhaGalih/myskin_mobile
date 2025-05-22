@@ -380,14 +380,19 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                                       textAlign: TextAlign.center,
                                       style: AppTypograph.label2.bold.copyWith(
                                         color: getMelanomaColor(
-                                            ajuans[i]['diagnosisAi']??'0%'),
+                                            ajuans[i]['diagnosisAi'] ?? '0%'),
                                       )),
                                 ),
                                 Expanded(
                                     child: GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(
-                                        context, DetailPengajuanScreen.route);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DetailPengajuanScreen(
+                                                    id: ajuans[i]['id']
+                                                        .toString())));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(4),

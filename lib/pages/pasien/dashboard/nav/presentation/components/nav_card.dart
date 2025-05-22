@@ -20,6 +20,7 @@ class NavCard extends StatelessWidget {
         child: GestureDetector(
       onTap: onPressed,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(
             width: 62,
@@ -34,6 +35,7 @@ class NavCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             title,
+            textAlign: TextAlign.center,
             style: AppTypograph.label3.medium,
           )
         ],

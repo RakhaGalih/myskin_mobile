@@ -6,6 +6,7 @@ import 'package:myskin_mobile/core/components/app_textfield.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/components/dev_appbar.dart';
 import 'package:myskin_mobile/core/services/http_service.dart';
+import 'package:myskin_mobile/core/services/image_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
@@ -98,11 +99,10 @@ class _DetailRiwayatPengajuanPatientScreenState
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(
-                            'assets/images/melanoma.jpeg',
+                          child: MyNetworkImage(
+                            imageURL: ajuans['imageUrl'],
                             width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
+                            nullHeight: 200,
                           ),
                         ),
                       ),
@@ -113,7 +113,11 @@ class _DetailRiwayatPengajuanPatientScreenState
                       const SizedBox(height: 8),
                       AppButton(
                           padding: 8,
-                          onPressed: () {},
+                          onPressed: () async{
+                            if (ajuans['imageUrl'] != null) {
+                            await downloadImage(context,ajuans['imageUrl']);
+                          }
+                          },
                           child: SizedBox(
                             width: double.infinity,
                             child: Center(

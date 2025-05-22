@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myskin_mobile/core/components/card_container.dart';
 import 'package:myskin_mobile/core/services/http_service.dart';
+import 'package:myskin_mobile/core/services/image_service.dart';
 import 'package:myskin_mobile/core/theme/app_colors.dart';
 import 'package:myskin_mobile/core/theme/app_sizes.dart';
 import 'package:myskin_mobile/core/theme/app_typography.dart';
+import 'package:myskin_mobile/core/utils/format_util.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/home/presentation/components/berita_carrousel.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/components/nav_card.dart';
 import 'package:myskin_mobile/pages/pasien/dashboard/nav/presentation/screens/deteksi_kulit_screen.dart';
@@ -182,7 +184,7 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                           const SizedBox(
                             height: 4,
                           ),
-                          Text('Minggu, 6 Oktober 2024',
+                          Text(getFormattedDate(DateTime.now()),
                               style: AppTypograph.label1.regular)
                         ],
                       ),
@@ -195,6 +197,7 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
               padding: EdgeInsets.symmetric(horizontal: context.as.padding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -324,10 +327,10 @@ class _HomePatientScreenState extends State<HomePatientScreen> {
                                       const Spacer(),
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
-                                        child: Image.asset(
-                                          'assets/images/melanoma.jpeg',
-                                          width: 32,
-                                          height: 32,
+                                        child: MyNetworkImage(
+                                          imageURL: ajuans[i]['imageUrl'],
+                                          width: 30,
+                                          height: 30,
                                           fit: BoxFit.cover,
                                         ),
                                       ),

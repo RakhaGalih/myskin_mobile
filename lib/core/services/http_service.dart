@@ -7,7 +7,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart'; // Added for basename function
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String apiURL = "https://myskin-api-644f861da263.herokuapp.com/api";
+const String apiURL = "https://myskin-api-v2.humicprototyping.com/api";
 
 Future<Map<String, dynamic>> getData(String endpoint) async {
   final uri = Uri.parse(apiURL + endpoint);
