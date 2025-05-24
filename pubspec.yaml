@@ -22,11 +22,18 @@ dependencies:
   shared_preferences: ^2.5.3
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   build_runner: ^2.4.13
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
   json_serializable: ^6.9.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
@@ -47,10 +54,10 @@ flutter:
 
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/images/MySkin.png
+  image: assets/images/logo.png
 
   android_12:
-    image: assets/images/MySkin.png
+    image: assets/images/logo.png
     icon_background_color: "#ffffff"
 
   web: false

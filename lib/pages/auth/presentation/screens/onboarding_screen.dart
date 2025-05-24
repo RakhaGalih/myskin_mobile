@@ -57,8 +57,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             return Stack(
               children: [
                 Image.asset(
+                  
                   _onboardingData[index].image,
                   height: context.as.appHeight,
+                  
                   fit: BoxFit.fitHeight,
                 ),
                 Container(
